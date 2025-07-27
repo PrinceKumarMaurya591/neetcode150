@@ -1,0 +1,4336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeMaster 150 - Coding Interview Preparation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .solution-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .solution-content.show {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+        .dark-mode {
+            background-color: #1a202c;
+            color: #f7fafc;
+        }
+        .dark-mode .card {
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+        .dark-mode .solution-content {
+            background-color: #2d3748;
+        }
+        .markdown-content pre {
+            background-color: #af6f6f;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+        .dark-mode .markdown-content pre {
+            background-color: #4a5568;
+        }
+        .markdown-content code {
+            font-family: 'Courier New', monospace;
+            background-color: #af6f6f;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+        }
+        .dark-mode .markdown-content code {
+            background-color: #4a5568;
+        }
+        .problem-item.active {
+            background-color: #ebf5ff;
+            border-left-color: #3b82f6;
+        }
+        .dark-mode .problem-item.active {
+            background-color: #2d3748;
+            border-left-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl md:text-3xl font-bold">CodeMaster 150</h1>
+                    <span class="hidden md:block text-sm bg-blue-700 px-3 py-1 rounded-full">Premium</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-blue-700 transition">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-md transition">Sign In</button>
+                </div>
+            </div>
+            <nav class="mt-6">
+                <ul class="flex space-x-6 overflow-x-auto pb-2">
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="all">All Problems</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="arrays">Arrays & Hashing</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="two-pointers">Two Pointers</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="sliding-window">Sliding Window</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="stack">Stack</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="binary-search">Binary Search</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="linked-list">Linked List</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="trees">Trees</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="graphs">Graphs</a></li>
+                    <li><a href="#" class="font-medium hover:text-blue-200 transition" data-category="dp">Dynamic Programming</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Problems List -->
+            <div class="w-full md:w-1/3 lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-4 dark:bg-gray-800 dark:text-white">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Problems</h2>
+                        <div class="relative">
+                            <input type="text" id="problem-search" placeholder="Search problems..." class="pl-8 pr-4 py-2 border rounded-md text-sm w-full dark:bg-gray-700 dark:border-gray-600">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="space-y-2 max-h-screen overflow-y-auto" id="problems-container">
+                        <!-- Problems will be loaded here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem Detail -->
+            <div class="w-full md:w-2/3 lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6 dark:bg-gray-800 dark:text-white">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold" id="problem-title">Select a Problem</h2>
+                            <div class="flex items-center space-x-4 mt-2" id="problem-meta">
+                                <!-- Problem meta will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded-md text-sm hover:bg-blue-200 transition dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600" id="run-code">
+                                <i class="fas fa-code mr-1"></i> Run Code
+                            </button>
+                            <button class="bg-green-100 text-green-600 px-3 py-1 rounded-md text-sm hover:bg-green-200 transition dark:bg-green-700 dark:text-white dark:hover:bg-green-600" id="submit-code">
+                                <i class="fas fa-check mr-1"></i> Submit
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4 mb-6 dark:border-gray-700" id="problem-content">
+                        <div class="markdown-content">
+                            <p>Select a problem from the list to view its details and solutions.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4 dark:border-gray-700" id="solutions-container">
+                        <!-- Solutions will be loaded here dynamically -->
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800 dark:text-white" id="similar-questions-container">
+                    <!-- Similar questions will be loaded here dynamically -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-12 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">CodeMaster 150</h3>
+                    <p class="text-gray-400 text-sm">Master coding interviews with our curated list of 150 essential problems and detailed solutions.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">All Problems</a></li>
+                        <li><a href="#" class="hover:text-white transition">Study Guide</a></li>
+                        <li><a href="#" class="hover:text-white transition">Cheat Sheets</a></li>
+                        <li><a href="#" class="hover:text-white transition">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Connect</h4>
+                    <div class="flex space-x-4 text-gray-400">
+                        <a href="#" class="hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-white transition"><i class="fab fa-github"></i></a>
+                        <a href="#" class="hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    <p class="text-sm text-gray-400 mt-4">Subscribe to our newsletter</p>
+                    <div class="mt-2 flex">
+                        <input type="email" placeholder="Your email" class="px-3 py-2 text-gray-800 rounded-l-md text-sm w-full dark:bg-gray-700 dark:text-white">
+                        <button class="bg-blue-600 text-white px-3 py-2 rounded-r-md text-sm hover:bg-blue-700 transition">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-sm text-gray-400 text-center">
+                <p>© 2023 CodeMaster 150. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Problem data for NeetCode 150
+        const problems = [
+    {
+        id: 1,
+        title: "Contains Duplicate",
+        difficulty: "easy",
+        category: "arrays",
+        description: `Given an integer array <code>nums</code>, return <code>true</code> if any value appears at least twice in the array, and return <code>false</code> if every element is distinct.`,
+        examples: [
+            {
+                input: "nums = [1,2,3,1]",
+                output: "true",
+                explanation: ""
+            },
+            {
+                input: "nums = [1,2,3,4]",
+                output: "false",
+                explanation: ""
+            },
+            {
+                input: "nums = [1,1,1,3,3,4,3,2,4,2]",
+                output: "true",
+                explanation: ""
+            }
+        ],
+        constraints: [
+            "<code>1 <= nums.length <= 10<sup>5</sup></code>",
+            "<code>-10<sup>9</sup> <= nums[i] <= 10<sup>9</sup></code>"
+        ],
+        solutions: [
+            {
+                title: "Hash Set Approach",
+                complexity: "O(n)",
+                content: {
+                    intuition: "Using a hash set allows us to track seen numbers efficiently.",
+                    approach: "Iterate through the array, adding each element to a set. If an element is already in the set, return true.",
+                    code: `class Solution {
+    public boolean containsDuplicate(int[] nums) {
+        Set<Integer> seen = new HashSet<>();
+        for (int num : nums) {
+            if (seen.contains(num)) {
+                return true;
+            }
+            seen.add(num);
+        }
+        return false;
+    }
+}`,
+                    analysis: {
+                        time: "O(n) - We do a single pass through the array",
+                        space: "O(n) - Worst case we store all elements in the set"
+                    }
+                }
+            },
+            {
+                title: "Sorting Approach",
+                complexity: "O(n log n)",
+                content: {
+                    intuition: "If we sort the array, duplicates will be adjacent.",
+                    approach: "Sort the array then check adjacent elements for duplicates.",
+                    code: `class Solution {
+    public boolean containsDuplicate(int[] nums) {
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 1; i++) {
+            if (nums[i] == nums[i + 1]) {
+                return true;
+            }
+        }
+        return false;
+    }
+}`,
+                    analysis: {
+                        time: "O(n log n) - Due to sorting",
+                        space: "O(1) - No extra space needed (though sorting may use O(log n) space)"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Contains Duplicate II", difficulty: "easy", category: "arrays" },
+            { title: "Contains Duplicate III", difficulty: "medium", category: "arrays" },
+            { title: "Find All Duplicates in an Array", difficulty: "medium", category: "arrays" }
+        ]
+    },
+    {
+        id: 2,
+        title: "Valid Anagram",
+        difficulty: "easy",
+        category: "arrays",
+        description: `Given two strings <code>s</code> and <code>t</code>, return <code>true</code> if <code>t</code> is an anagram of <code>s</code>, and <code>false</code> otherwise.
+
+An <strong>Anagram</strong> is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.`,
+        examples: [
+            {
+                input: 's = "anagram", t = "nagaram"',
+                output: "true",
+                explanation: ""
+            },
+            {
+                input: 's = "rat", t = "car"',
+                output: "false",
+                explanation: ""
+            }
+        ],
+        constraints: [
+            "<code>1 <= s.length, t.length <= 5 * 10<sup>4</sup></code>",
+            "<code>s</code> and <code>t</code> consist of lowercase English letters."
+        ],
+        solutions: [
+            {
+                title: "Hash Table Approach",
+                complexity: "O(n)",
+                content: {
+                    intuition: "Anagrams must have the same character counts.",
+                    approach: "Use a hash table to count characters in s, then decrement for characters in t. If any count is non-zero, they're not anagrams.",
+                    code: `class Solution {
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+        
+        int[] count = new int[26];
+        for (char c : s.toCharArray()) {
+            count[c - 'a']++;
+        }
+        for (char c : t.toCharArray()) {
+            count[c - 'a']--;
+            if (count[c - 'a'] < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}`,
+                    analysis: {
+                        time: "O(n) - We pass through both strings once",
+                        space: "O(1) - Fixed size array (26 letters)"
+                    }
+                }
+            },
+            {
+                title: "Sorting Approach",
+                complexity: "O(n log n)",
+                content: {
+                    intuition: "Sorted anagrams should be identical strings.",
+                    approach: "Sort both strings and compare if they're equal.",
+                    code: `class Solution {
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+        char[] sChars = s.toCharArray();
+        char[] tChars = t.toCharArray();
+        Arrays.sort(sChars);
+        Arrays.sort(tChars);
+        return Arrays.equals(sChars, tChars);
+    }
+}`,
+                    analysis: {
+                        time: "O(n log n) - Due to sorting",
+                        space: "O(n) - Need space for character arrays"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Group Anagrams", difficulty: "medium", category: "arrays" },
+            { title: "Palindrome Permutation", difficulty: "easy", category: "hash-table" },
+            { title: "Find All Anagrams in a String", difficulty: "medium", category: "string" }
+        ]
+    },
+    {
+        id: 3,
+        title: "Two Sum",
+        difficulty: "easy",
+        category: "arrays",
+        description: `Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.
+
+You may assume that each input would have <strong>exactly one solution</strong>, and you may not use the same element twice.
+
+You can return the answer in any order.`,
+        examples: [
+            {
+                input: "nums = [2,7,11,15], target = 9",
+                output: "[0,1]",
+                explanation: "Because nums[0] + nums[1] == 9, we return [0, 1]."
+            },
+            {
+                input: "nums = [3,2,4], target = 6",
+                output: "[1,2]",
+                explanation: ""
+            },
+            {
+                input: "nums = [3,3], target = 6",
+                output: "[0,1]",
+                explanation: ""
+            }
+        ],
+        constraints: [
+            "<code>2 <= nums.length <= 10<sup>4</sup></code>",
+            "<code>-10<sup>9</sup> <= nums[i] <= 10<sup>9</sup></code>",
+            "<code>-10<sup>9</sup> <= target <= 10<sup>9</sup></code>",
+            "<strong>Only one valid answer exists.</strong>"
+        ],
+        solutions: [
+            {
+                title: "Hash Map Approach",
+                complexity: "O(n)",
+                content: {
+                    intuition: "We can use a hash map to store numbers we've already seen and their indices.",
+                    approach: "As we iterate through the array, we check if the complement (target - current number) exists in the map. If it does, we return the indices.",
+                    code: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[]{map.get(complement), i};
+            }
+            map.put(nums[i], i);
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+}`,
+                    analysis: {
+                        time: "O(n) - We traverse the list once",
+                        space: "O(n) - Store at most n elements in the map"
+                    }
+                }
+            },
+            {
+                title: "Brute Force Approach",
+                complexity: "O(n²)",
+                content: {
+                    intuition: "Check all possible pairs in the array.",
+                    approach: "Use nested loops to check every combination of two numbers.",
+                    code: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+}`,
+                    analysis: {
+                        time: "O(n²) - For each element, we check all other elements",
+                        space: "O(1) - No extra space needed"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Three Sum", difficulty: "medium", category: "arrays" },
+            { title: "Four Sum", difficulty: "medium", category: "arrays" },
+            { title: "Two Sum II - Input Array Is Sorted", difficulty: "easy", category: "arrays" }
+        ]
+    },
+    {
+        id: 4,
+        title: "Group Anagrams",
+        difficulty: "medium",
+        category: "arrays",
+        description: `Given an array of strings <code>strs</code>, group <strong>the anagrams</strong> together. You can return the answer in <strong>any order</strong>.
+
+An <strong>Anagram</strong> is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.`,
+        examples: [
+            {
+                input: 'strs = ["eat","tea","tan","ate","nat","bat"]',
+                output: '[["bat"],["nat","tan"],["ate","eat","tea"]]',
+                explanation: ""
+            },
+            {
+                input: 'strs = [""]',
+                output: '[[""]]',
+                explanation: ""
+            },
+            {
+                input: 'strs = ["a"]',
+                output: '[["a"]]',
+                explanation: ""
+            }
+        ],
+        constraints: [
+            "<code>1 <= strs.length <= 10<sup>4</sup></code>",
+            "<code>0 <= strs[i].length <= 100</code>",
+            "<code>strs[i]</code> consists of lowercase English letters."
+        ],
+        solutions: [
+            {
+                title: "Categorize by Sorted String",
+                complexity: "O(n * k log k)",
+                content: {
+                    intuition: "Two strings are anagrams if their sorted versions are equal.",
+                    approach: "Use the sorted string as a key in a hash map to group anagrams.",
+                    code: `class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String s : strs) {
+            char[] chars = s.toCharArray();
+            Arrays.sort(chars);
+            String key = String.valueOf(chars);
+            if (!map.containsKey(key)) {
+                map.put(key, new ArrayList<>());
+            }
+            map.get(key).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+}`,
+                    analysis: {
+                        time: "O(n * k log k) - Where n is number of strings, k is max length",
+                        space: "O(n * k) - Storage for all strings"
+                    }
+                }
+            },
+            {
+                title: "Categorize by Count",
+                complexity: "O(n * k)",
+                content: {
+                    intuition: "Anagrams have the same character counts.",
+                    approach: "Use character counts as a key in a hash map to group anagrams.",
+                    code: `class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String s : strs) {
+            int[] count = new int[26];
+            for (char c : s.toCharArray()) {
+                count[c - 'a']++;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 26; i++) {
+                sb.append('#');
+                sb.append(count[i]);
+            }
+            String key = sb.toString();
+            if (!map.containsKey(key)) {
+                map.put(key, new ArrayList<>());
+            }
+            map.get(key).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+}`,
+                    analysis: {
+                        time: "O(n * k) - Where n is number of strings, k is max length",
+                        space: "O(n * k) - Storage for all strings"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Valid Anagram", difficulty: "easy", category: "arrays" },
+            { title: "Find All Anagrams in a String", difficulty: "medium", category: "string" },
+            { title: "Group Shifted Strings", difficulty: "medium", category: "string" }
+        ]
+    },
+    {
+        id: 5,
+        title: "Top K Frequent Elements",
+        difficulty: "medium",
+        category: "arrays",
+        description: `Given an integer array <code>nums</code> and an integer <code>k</code>, return the <code>k</code> most frequent elements. You may return the answer in <strong>any order</strong>.`,
+        examples: [
+            {
+                input: "nums = [1,1,1,2,2,3], k = 2",
+                output: "[1,2]",
+                explanation: ""
+            },
+            {
+                input: "nums = [1], k = 1",
+                output: "[1]",
+                explanation: ""
+            }
+        ],
+        constraints: [
+            "<code>1 <= nums.length <= 10<sup>5</sup></code>",
+            "<code>-10<sup>4</sup> <= nums[i] <= 10<sup>4</sup></code>",
+            "<code>k</code> is in the range <code>[1, the number of unique elements in the array]</code>.",
+            "It is <strong>guaranteed</strong> that the answer is <strong>unique</strong>."
+        ],
+        solutions: [
+            {
+                title: "Heap Approach",
+                complexity: "O(n log k)",
+                content: {
+                    intuition: "We can count frequencies then use a min-heap to keep top k elements.",
+                    approach: "1. Count frequencies with hash map. 2. Use min-heap of size k to keep top elements. 3. Extract elements from heap.",
+                    code: `class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        // Count frequencies
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) {
+            count.put(num, count.getOrDefault(num, 0) + 1);
+        }
+        
+        // Min-heap to keep top k elements
+        PriorityQueue<Integer> heap = new PriorityQueue<>(
+            (a, b) -> count.get(a) - count.get(b));
+        
+        for (int num : count.keySet()) {
+            heap.add(num);
+            if (heap.size() > k) {
+                heap.poll();
+            }
+        }
+        
+        // Build result
+        int[] result = new int[k];
+        for (int i = k - 1; i >= 0; i--) {
+            result[i] = heap.poll();
+        }
+        return result;
+    }
+}`,
+                    analysis: {
+                        time: "O(n log k) - Heap operations take O(log k) time",
+                        space: "O(n) - For hash map and heap"
+                    }
+                }
+            },
+            {
+                title: "Bucket Sort Approach",
+                complexity: "O(n)",
+                content: {
+                    intuition: "We can use an array where the index represents frequency.",
+                    approach: "1. Count frequencies. 2. Create array where index = frequency. 3. Iterate from highest frequency to collect top k elements.",
+                    code: `class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        // Count frequencies
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) {
+            count.put(num, count.getOrDefault(num, 0) + 1);
+        }
+        
+        // Create frequency buckets
+        List<Integer>[] buckets = new List[nums.length + 1];
+        for (int num : count.keySet()) {
+            int freq = count.get(num);
+            if (buckets[freq] == null) {
+                buckets[freq] = new ArrayList<>();
+            }
+            buckets[freq].add(num);
+        }
+        
+        // Collect top k elements
+        int[] result = new int[k];
+        int index = 0;
+        for (int i = buckets.length - 1; i >= 0 && index < k; i--) {
+            if (buckets[i] != null) {
+                for (int num : buckets[i]) {
+                    result[index++] = num;
+                    if (index == k) break;
+                }
+            }
+        }
+        return result;
+    }
+}`,
+                    analysis: {
+                        time: "O(n) - We make three passes through the data",
+                        space: "O(n) - For hash map and buckets"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Word Frequency", difficulty: "medium", category: "shell" },
+            { title: "Kth Largest Element in an Array", difficulty: "medium", category: "arrays" },
+            { title: "Sort Characters By Frequency", difficulty: "medium", category: "string" }
+        ]
+    },
+    {
+        id: 6,
+        title: "Product of Array Except Self",
+        difficulty: "medium",
+        category: "arrays",
+        description: `Given an integer array <code>nums</code>, return an array <code>answer</code> such that <code>answer[i]</code> is equal to the product of all the elements of <code>nums</code> except <code>nums[i]</code>.
+
+The product of any prefix or suffix of <code>nums</code> is <strong>guaranteed</strong> to fit in a <strong>32-bit</strong> integer.
+
+You must write an algorithm that runs in <code>O(n)</code> time and without using the division operation.`,
+        examples: [
+            {
+                input: "nums = [1,2,3,4]",
+                output: "[24,12,8,6]",
+                explanation: ""
+            },
+            {
+                input: "nums = [-1,1,0,-3,3]",
+                output: "[0,0,9,0,0]",
+                explanation: ""
+            }
+        ],
+        constraints: [
+            "<code>2 <= nums.length <= 10<sup>5</sup></code>",
+            "<code>-30 <= nums[i] <= 30</code>",
+            "The product of any prefix or suffix of <code>nums</code> is <strong>guaranteed</strong> to fit in a <strong>32-bit</strong> integer."
+        ],
+        solutions: [
+            {
+                title: "Prefix and Suffix Products",
+                complexity: "O(n)",
+                content: {
+                    intuition: "The product except self is product of left elements * product of right elements.",
+                    approach: "Calculate prefix products (left to right) then suffix products (right to left) and combine them.",
+                    code: `class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] answer = new int[n];
+        
+        // Calculate prefix products
+        answer[0] = 1;
+        for (int i = 1; i < n; i++) {
+            answer[i] = answer[i - 1] * nums[i - 1];
+        }
+        
+        // Calculate suffix products and combine
+        int suffix = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            answer[i] *= suffix;
+            suffix *= nums[i];
+        }
+        
+        return answer;
+    }
+}`,
+                    analysis: {
+                        time: "O(n) - Two passes through the array",
+                        space: "O(1) - Output array doesn't count as extra space"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Trapping Rain Water", difficulty: "hard", category: "arrays" },
+            { title: "Maximum Product Subarray", difficulty: "medium", category: "arrays" },
+            { title: "Paint House II", difficulty: "hard", category: "dynamic-programming" }
+        ]
+    },
+    {
+        id: 7,
+        title: "Valid Sudoku",
+        difficulty: "medium",
+        category: "arrays",
+        description: `Determine if a <code>9 x 9</code> Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+1. Each row must contain the digits <code>1-9</code> without repetition.
+2. Each column must contain the digits <code>1-9</code> without repetition.
+3. Each of the nine <code>3 x 3</code> sub-boxes of the grid must contain the digits <code>1-9</code> without repetition.
+
+<strong>Note:</strong>
+- A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+- Only the filled cells need to be validated according to the mentioned rules.`,
+        examples: [
+            {
+                input: `board = 
+[["5","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]`,
+                output: "true",
+                explanation: ""
+            },
+            {
+                input: `board = 
+[["8","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]`,
+                output: "false",
+                explanation: "Same as Example 1, except with the 5 in the top left corner being modified to 8."
+            }
+        ],
+        constraints: [
+            "<code>board.length == 9</code>",
+            "<code>board[i].length == 9</code>",
+            "<code>board[i][j]</code> is a digit <code>1-9</code> or <code>'.'</code>."
+        ],
+        solutions: [
+            {
+                title: "Hash Set Validation",
+                complexity: "O(1)",
+                content: {
+                    intuition: "We need to check for duplicates in rows, columns, and 3x3 boxes.",
+                    approach: "Use hash sets to track seen numbers in each row, column, and box. The box index can be calculated as (row / 3) * 3 + (col / 3).",
+                    code: `class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        Set<String> seen = new HashSet<>();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char num = board[i][j];
+                if (num != '.') {
+                    String rowKey = num + " in row " + i;
+                    String colKey = num + " in col " + j;
+                    String boxKey = num + " in box " + (i / 3) + "-" + (j / 3);
+                    
+                    if (seen.contains(rowKey) || seen.contains(colKey) || seen.contains(boxKey)) {
+                        return false;
+                    }
+                    
+                    seen.add(rowKey);
+                    seen.add(colKey);
+                    seen.add(boxKey);
+                }
+            }
+        }
+        return true;
+    }
+}`,
+                    analysis: {
+                        time: "O(1) - Fixed 9x9 grid means constant time",
+                        space: "O(1) - Fixed amount of space for sets"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Sudoku Solver", difficulty: "hard", category: "backtracking" },
+            { title: "Unique Paths III", difficulty: "hard", category: "backtracking" }
+        ]
+    },
+    {
+        id: 8,
+        title: "Longest Consecutive Sequence",
+        difficulty: "medium",
+        category: "arrays",
+        description: `Given an unsorted array of integers <code>nums</code>, return the length of the longest consecutive elements sequence.
+
+You must write an algorithm that runs in <code>O(n)</code> time.`,
+        examples: [
+            {
+                input: "nums = [100,4,200,1,3,2]",
+                output: "4",
+                explanation: "The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4."
+            },
+            {
+                input: "nums = [0,3,7,2,5,8,4,6,0,1]",
+                output: "9",
+                explanation: ""
+            }
+        ],
+        constraints: [
+            "<code>0 <= nums.length <= 10<sup>5</sup></code>",
+            "<code>-10<sup>9</sup> <= nums[i] <= 10<sup>9</sup></code>"
+        ],
+        solutions: [
+            {
+                title: "Hash Set Optimization",
+                complexity: "O(n)",
+                content: {
+                    intuition: "We can find sequence starts by checking if num-1 exists in the set.",
+                    approach: "1. Add all numbers to a set. 2. For each number, if it's a sequence start (no num-1), count the consecutive numbers after it.",
+                    code: `class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> numSet = new HashSet<>();
+        for (int num : nums) {
+            numSet.add(num);
+        }
+        
+        int longestStreak = 0;
+        
+        for (int num : numSet) {
+            if (!numSet.contains(num - 1)) {  // Check if it's the start of a sequence
+                int currentNum = num;
+                int currentStreak = 1;
+                
+                while (numSet.contains(currentNum + 1)) {
+                    currentNum++;
+                    currentStreak++;
+                }
+                
+                longestStreak = Math.max(longestStreak, currentStreak);
+            }
+        }
+        
+        return longestStreak;
+    }
+}`,
+                    analysis: {
+                        time: "O(n) - Each element is visited at most twice",
+                        space: "O(n) - For the hash set"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "Binary Tree Longest Consecutive Sequence", difficulty: "medium", category: "tree" },
+            { title: "Find All Numbers Disappeared in an Array", difficulty: "easy", category: "arrays" }
+        ]
+    },
+    {
+        id: 9,
+        title: "Encode and Decode Strings",
+        difficulty: "medium",
+        category: "arrays",
+        description: `Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
+
+<strong>Implement the <code>encode</code> and <code>decode</code> methods.</strong>`,
+        examples: [
+            {
+                input: 'Input: ["lint","code","love","you"]',
+                output: 'Output: ["lint","code","love","you"]',
+                explanation: "One possible encode method is: 'lint:;code:;love:;you'"
+            },
+            {
+                input: 'Input: ["we", "say", ":", "yes"]',
+                output: 'Output: ["we", "say", ":", "yes"]',
+                explanation: "One possible encode method is: 'we:;say:;:::;yes'"
+            }
+        ],
+        constraints: [
+            "<code>1 <= strs.length <= 200</code>",
+            "<code>0 <= strs[i].length <= 200</code>",
+            "<code>strs[i]</code> contains any possible characters out of 256 valid ASCII characters."
+        ],
+        solutions: [
+            {
+                title: "Length-Delimited Encoding",
+                complexity: "O(n)",
+                content: {
+                    intuition: "We need a way to separate strings that works even if the strings contain the separator.",
+                    approach: "Encode each string as [length]#[string]. This way we can always find the next string by reading the length first.",
+                    code: `public class Codec {
+    // Encodes a list of strings to a single string.
+    public String encode(List<String> strs) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : strs) {
+            sb.append(s.length()).append('#').append(s);
+        }
+        return sb.toString();
+    }
+
+    // Decodes a single string to a list of strings.
+    public List<String> decode(String s) {
+        List<String> result = new ArrayList<>();
+        int i = 0;
+        while (i < s.length()) {
+            int delimiter = s.indexOf('#', i);
+            int length = Integer.parseInt(s.substring(i, delimiter));
+            i = delimiter + 1;
+            result.add(s.substring(i, i + length));
+            i += length;
+        }
+        return result;
+    }
+}`,
+                    analysis: {
+                        time: "O(n) - Single pass through all strings",
+                        space: "O(n) - Storage for encoded string"
+                    }
+                }
+            }
+        ],
+        similarQuestions: [
+            { title: "String Compression", difficulty: "easy", category: "string" },
+            { title: "Count and Say", difficulty: "easy", category: "string" }
+        ]
+    },
+	{
+    id: 10,
+    title: "Valid Palindrome",
+    difficulty: "easy",
+    category: "two-pointers",
+    description: `A phrase is a <strong>palindrome</strong> if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+
+Given a string <code>s</code>, return <code>true</code> if it is a palindrome, or <code>false</code> otherwise.`,
+    examples: [
+        {
+            input: 's = "A man, a plan, a canal: Panama"',
+            output: "true",
+            explanation: '"amanaplanacanalpanama" is a palindrome.'
+        },
+        {
+            input: 's = "race a car"',
+            output: "false",
+            explanation: '"raceacar" is not a palindrome.'
+        },
+        {
+            input: 's = " "',
+            output: "true",
+            explanation: "s is an empty string after removing non-alphanumeric characters."
+        }
+    ],
+    constraints: [
+        "<code>1 <= s.length <= 2 * 10<sup>5</sup></code>",
+        "<code>s</code> consists only of printable ASCII characters."
+    ],
+    solutions: [
+        {
+            title: "Two Pointers Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Compare characters from the start and end, moving towards the center while skipping non-alphanumeric characters.",
+                approach: "Use two pointers (left and right). Move them towards each other, comparing valid alphanumeric characters.",
+                code: `class Solution {
+    public boolean isPalindrome(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
+                left++;
+            }
+            while (left < right && !Character.isLetterOrDigit(s.charAt(right))) {
+                right--;
+            }
+            
+            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+                return false;
+            }
+            
+            left++;
+            right--;
+        }
+        return true;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the string",
+                    space: "O(1) - No extra space needed"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Valid Palindrome II", difficulty: "easy", category: "two-pointers" },
+        { title: "Palindrome Linked List", difficulty: "easy", category: "linked-list" }
+    ]
+},
+{
+    id: 11,
+    title: "Two Sum II - Input Array Is Sorted",
+    difficulty: "medium",
+    category: "two-pointers",
+    description: `Given a <strong>1-indexed</strong> array of integers <code>numbers</code> that is already <strong>sorted in non-decreasing order</strong>, find two numbers such that they add up to a specific <code>target</code> number. 
+
+Return the indices of the two numbers, <code>index1</code> and <code>index2</code>, as an integer array <code>[index1, index2]</code> of length 2.`,
+    examples: [
+        {
+            input: "numbers = [2,7,11,15], target = 9",
+            output: "[1,2]",
+            explanation: "The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2."
+        },
+        {
+            input: "numbers = [2,3,4], target = 6",
+            output: "[1,3]",
+            explanation: "The sum of 2 and 4 is 6. Therefore, index1 = 1, index2 = 3."
+        },
+        {
+            input: "numbers = [-1,0], target = -1",
+            output: "[1,2]",
+            explanation: "The sum of -1 and 0 is -1. Therefore, index1 = 1, index2 = 2."
+        }
+    ],
+    constraints: [
+        "<code>2 <= numbers.length <= 3 * 10<sup>4</sup></code>",
+        "<code>-1000 <= numbers[i] <= 1000</code>",
+        "<code>numbers</code> is sorted in non-decreasing order.",
+        "<code>-1000 <= target <= 1000</code>",
+        "The tests are generated such that there is exactly one solution."
+    ],
+    solutions: [
+        {
+            title: "Two Pointers Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Since the array is sorted, we can use two pointers to find the pair efficiently.",
+                approach: "Start with one pointer at the beginning and one at the end. Adjust pointers based on whether the current sum is less than or greater than the target.",
+                code: `class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int left = 0, right = numbers.length - 1;
+        while (left < right) {
+            int sum = numbers[left] + numbers[right];
+            if (sum == target) {
+                return new int[]{left + 1, right + 1};
+            } else if (sum < target) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return new int[]{-1, -1}; // Shouldn't reach here per problem statement
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Worst case we visit each element once",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        },
+        {
+            title: "Binary Search Approach",
+            complexity: "O(n log n)",
+            content: {
+                intuition: "For each element, we can binary search for its complement.",
+                approach: "Iterate through the array and for each element, binary search the remaining array for target - numbers[i].",
+                code: `class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        for (int i = 0; i < numbers.length; i++) {
+            int complement = target - numbers[i];
+            int left = i + 1, right = numbers.length - 1;
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                if (numbers[mid] == complement) {
+                    return new int[]{i + 1, mid + 1};
+                } else if (numbers[mid] < complement) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return new int[]{-1, -1};
+    }
+}`,
+                analysis: {
+                    time: "O(n log n) - Binary search for each element",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Two Sum", difficulty: "easy", category: "arrays" },
+        { title: "Two Sum Less Than K", difficulty: "easy", category: "two-pointers" }
+    ]
+},
+{
+    id: 12,
+    title: "3Sum",
+    difficulty: "medium",
+    category: "two-pointers",
+    description: `Given an integer array <code>nums</code>, return all the triplets <code>[nums[i], nums[j], nums[k]]</code> such that <code>i != j</code>, <code>i != k</code>, and <code>j != k</code>, and <code>nums[i] + nums[j] + nums[k] == 0</code>.
+
+Notice that the solution set must not contain duplicate triplets.`,
+    examples: [
+        {
+            input: "nums = [-1,0,1,2,-1,-4]",
+            output: "[[-1,-1,2],[-1,0,1]]",
+            explanation: ""
+        },
+        {
+            input: "nums = [0,1,1]",
+            output: "[]",
+            explanation: "The only possible triplet does not sum up to 0."
+        },
+        {
+            input: "nums = [0,0,0]",
+            output: "[[0,0,0]]",
+            explanation: "The only possible triplet sums up to 0."
+        }
+    ],
+    constraints: [
+        "<code>3 <= nums.length <= 3000</code>",
+        "<code>-10<sup>5</sup> <= nums[i] <= 10<sup>5</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Two Pointers Approach",
+            complexity: "O(n²)",
+            content: {
+                intuition: "Sort the array and use a combination of iteration and two pointers to find triplets.",
+                approach: "1. Sort the array. 2. For each element, use two pointers to find pairs that sum to -nums[i]. 3. Skip duplicates to avoid duplicate triplets.",
+                code: `class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue; // Skip duplicates
+            
+            int left = i + 1, right = nums.length - 1;
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                if (sum == 0) {
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    while (left < right && nums[left] == nums[left + 1]) left++; // Skip duplicates
+                    while (left < right && nums[right] == nums[right - 1]) right--; // Skip duplicates
+                    left++;
+                    right--;
+                } else if (sum < 0) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        return result;
+    }
+}`,
+                analysis: {
+                    time: "O(n²) - Sorting is O(n log n), two-pointer approach is O(n²)",
+                    space: "O(log n) to O(n) depending on sorting implementation"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Two Sum", difficulty: "easy", category: "arrays" },
+        { title: "3Sum Closest", difficulty: "medium", category: "two-pointers" },
+        { title: "4Sum", difficulty: "medium", category: "two-pointers" }
+    ]
+},
+{
+    id: 13,
+    title: "Container With Most Water",
+    difficulty: "medium",
+    category: "two-pointers",
+    description: `You are given an integer array <code>height</code> of length <code>n</code>. There are <code>n</code> vertical lines drawn such that the two endpoints of the <code>i<sup>th</sup></code> line are <code>(i, 0)</code> and <code>(i, height[i])</code>.
+
+Find two lines that together with the x-axis form a container, such that the container contains the most water.
+
+Return the maximum amount of water a container can store.`,
+    examples: [
+        {
+            input: "height = [1,8,6,2,5,4,8,3,7]",
+            output: "49",
+            explanation: "The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. The largest container is between lines at index 1 and 8."
+        },
+        {
+            input: "height = [1,1]",
+            output: "1",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>n == height.length</code>",
+        "<code>2 <= n <= 10<sup>5</sup></code>",
+        "<code>0 <= height[i] <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Two Pointers Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "The area is limited by the shorter line, so moving the pointer at the shorter line might increase the area.",
+                approach: "Start with pointers at both ends. Calculate area and move the pointer pointing to the shorter line inward. Track the maximum area found.",
+                code: `class Solution {
+    public int maxArea(int[] height) {
+        int maxArea = 0;
+        int left = 0, right = height.length - 1;
+        
+        while (left < right) {
+            int currentHeight = Math.min(height[left], height[right]);
+            int currentWidth = right - left;
+            maxArea = Math.max(maxArea, currentHeight * currentWidth);
+            
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        
+        return maxArea;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the array",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Trapping Rain Water", difficulty: "hard", category: "two-pointers" },
+        { title: "Largest Rectangle in Histogram", difficulty: "hard", category: "stack" }
+    ]
+},
+{
+    id: 14,
+    title: "Trapping Rain Water",
+    difficulty: "hard",
+    category: "two-pointers",
+    description: `Given <code>n</code> non-negative integers representing an elevation map where the width of each bar is <code>1</code>, compute how much water it can trap after raining.`,
+    examples: [
+        {
+            input: "height = [0,1,0,2,1,0,1,3,2,1,2,1]",
+            output: "6",
+            explanation: "The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped."
+        },
+        {
+            input: "height = [4,2,0,3,2,5]",
+            output: "9",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>n == height.length</code>",
+        "<code>1 <= n <= 2 * 10<sup>4</sup></code>",
+        "<code>0 <= height[i] <= 10<sup>5</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Two Pointers Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "The amount of water at each point depends on the minimum of the highest bars on both sides minus the current height.",
+                approach: "Use two pointers to track the maximum heights from left and right. Calculate water trapped based on the smaller max height.",
+                code: `class Solution {
+    public int trap(int[] height) {
+        int left = 0, right = height.length - 1;
+        int leftMax = 0, rightMax = 0;
+        int water = 0;
+        
+        while (left < right) {
+            if (height[left] < height[right]) {
+                if (height[left] >= leftMax) {
+                    leftMax = height[left];
+                } else {
+                    water += leftMax - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= rightMax) {
+                    rightMax = height[right];
+                } else {
+                    water += rightMax - height[right];
+                }
+                right--;
+            }
+        }
+        
+        return water;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the array",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        },
+        {
+            title: "Dynamic Programming Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Precompute the highest bars from left and right for each position.",
+                approach: "Create two arrays to store max heights from left and right. Then calculate water trapped at each point using these arrays.",
+                code: `class Solution {
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) return 0;
+        
+        int n = height.length;
+        int[] leftMax = new int[n];
+        int[] rightMax = new int[n];
+        
+        leftMax[0] = height[0];
+        for (int i = 1; i < n; i++) {
+            leftMax[i] = Math.max(leftMax[i - 1], height[i]);
+        }
+        
+        rightMax[n - 1] = height[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            rightMax[i] = Math.max(rightMax[i + 1], height[i]);
+        }
+        
+        int water = 0;
+        for (int i = 0; i < n; i++) {
+            water += Math.min(leftMax[i], rightMax[i]) - height[i];
+        }
+        
+        return water;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Three passes through the array",
+                    space: "O(n) - Additional arrays for left and right max heights"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Container With Most Water", difficulty: "medium", category: "two-pointers" },
+        { title: "Product of Array Except Self", difficulty: "medium", category: "arrays" }
+    ]
+},
+
+
+{
+    id: 15,
+    title: "Best Time to Buy and Sell Stock",
+    difficulty: "easy",
+    category: "sliding-window",
+    description: `You are given an array <code>prices</code> where <code>prices[i]</code> is the price of a given stock on the <code>i<sup>th</sup></code> day.
+
+You want to maximize your profit by choosing a <strong>single day</strong> to buy one stock and choosing a <strong>different day in the future</strong> to sell that stock.
+
+Return the <em>maximum profit</em> you can achieve from this transaction. If you cannot achieve any profit, return <code>0</code>.`,
+    examples: [
+        {
+            input: "prices = [7,1,5,3,6,4]",
+            output: "5",
+            explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5."
+        },
+        {
+            input: "prices = [7,6,4,3,1]",
+            output: "0",
+            explanation: "In this case, no transactions are done and the max profit = 0."
+        }
+    ],
+    constraints: [
+        "<code>1 <= prices.length <= 10<sup>5</sup></code>",
+        "<code>0 <= prices[i] <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "One Pass Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Keep track of the minimum price and calculate potential profit at each step.",
+                approach: "Iterate through the prices, updating the minimum price and calculating the maximum profit that can be obtained by selling at the current price.",
+                code: `class Solution {
+    public int maxProfit(int[] prices) {
+        int minPrice = Integer.MAX_VALUE;
+        int maxProfit = 0;
+        
+        for (int price : prices) {
+            if (price < minPrice) {
+                minPrice = price;
+            } else if (price - minPrice > maxProfit) {
+                maxProfit = price - minPrice;
+            }
+        }
+        
+        return maxProfit;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the prices array",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Best Time to Buy and Sell Stock II", difficulty: "medium", category: "arrays" },
+        { title: "Best Time to Buy and Sell Stock III", difficulty: "hard", category: "dynamic-programming" }
+    ]
+},
+{
+    id: 16,
+    title: "Longest Substring Without Repeating Characters",
+    difficulty: "medium",
+    category: "sliding-window",
+    description: `Given a string <code>s</code>, find the length of the <strong>longest substring</strong> without repeating characters.`,
+    examples: [
+        {
+            input: 's = "abcabcbb"',
+            output: "3",
+            explanation: "The answer is 'abc', with the length of 3."
+        },
+        {
+            input: 's = "bbbbb"',
+            output: "1",
+            explanation: "The answer is 'b', with the length of 1."
+        },
+        {
+            input: 's = "pwwkew"',
+            output: "3",
+            explanation: "The answer is 'wke', with the length of 3."
+        }
+    ],
+    constraints: [
+        "<code>0 <= s.length <= 5 * 10<sup>4</sup></code>",
+        "<code>s</code> consists of English letters, digits, symbols and spaces."
+    ],
+    solutions: [
+        {
+            title: "Sliding Window with Hash Set",
+            complexity: "O(n)",
+            content: {
+                intuition: "Use a sliding window to represent the current substring without repeats, adjusting the window when duplicates are found.",
+                approach: "Maintain a window [i, j] of unique characters using a hash set. Move the left pointer when duplicates are encountered.",
+                code: `class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Set<Character> set = new HashSet<>();
+        int maxLength = 0;
+        int left = 0;
+        
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            while (set.contains(c)) {
+                set.remove(s.charAt(left));
+                left++;
+            }
+            set.add(c);
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+        
+        return maxLength;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Each character is visited at most twice",
+                    space: "O(min(m, n)) - Where m is character set size"
+                }
+            }
+        },
+        {
+            title: "Optimized Sliding Window with Hash Map",
+            complexity: "O(n)",
+            content: {
+                intuition: "Store character indices to skip unnecessary checks when duplicates are found.",
+                approach: "Use a hash map to store character indices. When a duplicate is found, move the left pointer to the max of its current position and the duplicate's index + 1.",
+                code: `class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int maxLength = 0;
+        int left = 0;
+        
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            if (map.containsKey(c)) {
+                left = Math.max(left, map.get(c) + 1);
+            }
+            map.put(c, right);
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+        
+        return maxLength;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the string",
+                    space: "O(min(m, n)) - Where m is character set size"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Longest Substring with At Most Two Distinct Characters", difficulty: "medium", category: "sliding-window" },
+        { title: "Longest Substring with At Most K Distinct Characters", difficulty: "medium", category: "sliding-window" }
+    ]
+},
+{
+    id: 17,
+    title: "Longest Repeating Character Replacement",
+    difficulty: "medium",
+    category: "sliding-window",
+    description: `You are given a string <code>s</code> and an integer <code>k</code>. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most <code>k</code> times.
+
+Return the length of the longest substring containing the same letter you can get after performing the above operations.`,
+    examples: [
+        {
+            input: 's = "ABAB", k = 2',
+            output: "4",
+            explanation: "Replace the two 'A's with two 'B's or vice versa."
+        },
+        {
+            input: 's = "AABABBA", k = 1',
+            output: "4",
+            explanation: "Replace the one 'A' in the middle with 'B' and form 'AABBBBA'."
+        }
+    ],
+    constraints: [
+        "<code>1 <= s.length <= 10<sup>5</sup></code>",
+        "<code>s</code> consists of only uppercase English letters.",
+        "<code>0 <= k <= s.length</code>"
+    ],
+    solutions: [
+        {
+            title: "Sliding Window with Frequency Count",
+            complexity: "O(n)",
+            content: {
+                intuition: "Maintain a window where (window length - max frequency) <= k, allowing us to replace the remaining characters.",
+                approach: "Use a frequency array to track character counts in the current window. Adjust the window when replacements needed exceed k.",
+                code: `class Solution {
+    public int characterReplacement(String s, int k) {
+        int[] count = new int[26];
+        int maxCount = 0;
+        int maxLength = 0;
+        int left = 0;
+        
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            count[c - 'A']++;
+            maxCount = Math.max(maxCount, count[c - 'A']);
+            
+            // If window size - maxCount > k, we need to shrink the window
+            while (right - left + 1 - maxCount > k) {
+                count[s.charAt(left) - 'A']--;
+                left++;
+            }
+            
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+        
+        return maxLength;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the string",
+                    space: "O(1) - Fixed size frequency array"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Longest Substring with At Most K Distinct Characters", difficulty: "medium", category: "sliding-window" },
+        { title: "Permutation in String", difficulty: "medium", category: "sliding-window" }
+    ]
+},
+{
+    id: 18,
+    title: "Permutation in String",
+    difficulty: "medium",
+    category: "sliding-window",
+    description: `Given two strings <code>s1</code> and <code>s2</code>, return <code>true</code> if <code>s2</code> contains a permutation of <code>s1</code>, or <code>false</code> otherwise.
+
+In other words, return <code>true</code> if one of <code>s1</code>'s permutations is the substring of <code>s2</code>.`,
+    examples: [
+        {
+            input: 's1 = "ab", s2 = "eidbaooo"',
+            output: "true",
+            explanation: "s2 contains one permutation of s1 ('ba')."
+        },
+        {
+            input: 's1 = "ab", s2 = "eidboaoo"',
+            output: "false",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= s1.length, s2.length <= 10<sup>4</sup></code>",
+        "<code>s1</code> and <code>s2</code> consist of lowercase English letters."
+    ],
+    solutions: [
+        {
+            title: "Sliding Window with Frequency Matching",
+            complexity: "O(n)",
+            content: {
+                intuition: "A permutation will have the same character frequencies as the original string.",
+                approach: "Use a sliding window to compare frequency counts of characters in s1 with windows in s2 of the same length.",
+                code: `class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        if (s1.length() > s2.length()) return false;
+        
+        int[] s1Count = new int[26];
+        int[] s2Count = new int[26];
+        
+        // Initialize frequency counts
+        for (int i = 0; i < s1.length(); i++) {
+            s1Count[s1.charAt(i) - 'a']++;
+            s2Count[s2.charAt(i) - 'a']++;
+        }
+        
+        int matches = 0;
+        for (int i = 0; i < 26; i++) {
+            if (s1Count[i] == s2Count[i]) matches++;
+        }
+        
+        // Slide the window
+        for (int i = s1.length(); i < s2.length(); i++) {
+            if (matches == 26) return true;
+            
+            // Add new character
+            int rightChar = s2.charAt(i) - 'a';
+            s2Count[rightChar]++;
+            if (s2Count[rightChar] == s1Count[rightChar]) {
+                matches++;
+            } else if (s2Count[rightChar] == s1Count[rightChar] + 1) {
+                matches--;
+            }
+            
+            // Remove old character
+            int leftChar = s2.charAt(i - s1.length()) - 'a';
+            s2Count[leftChar]--;
+            if (s2Count[leftChar] == s1Count[leftChar]) {
+                matches++;
+            } else if (s2Count[leftChar] == s1Count[leftChar] - 1) {
+                matches--;
+            }
+        }
+        
+        return matches == 26;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Where n is length of s2",
+                    space: "O(1) - Fixed size frequency arrays"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Minimum Window Substring", difficulty: "hard", category: "sliding-window" },
+        { title: "Find All Anagrams in a String", difficulty: "medium", category: "sliding-window" }
+    ]
+},
+{
+    id: 19,
+    title: "Minimum Window Substring",
+    difficulty: "hard",
+    category: "sliding-window",
+    description: `Given two strings <code>s</code> and <code>t</code> of lengths <code>m</code> and <code>n</code> respectively, return the <strong>minimum window substring</strong> of <code>s</code> such that every character in <code>t</code> (including duplicates) is included in the window. If there is no such substring, return the empty string <code>""</code>.
+
+The testcases will be generated such that the answer is <strong>unique</strong>.`,
+    examples: [
+        {
+            input: 's = "ADOBECODEBANC", t = "ABC"',
+            output: '"BANC"',
+            explanation: "The minimum window substring 'BANC' includes 'A', 'B', and 'C' from string t."
+        },
+        {
+            input: 's = "a", t = "a"',
+            output: '"a"',
+            explanation: "The entire string s is the minimum window."
+        },
+        {
+            input: 's = "a", t = "aa"',
+            output: '""',
+            explanation: "Both 'a's from t must be included in the window, but s only has one 'a'."
+        }
+    ],
+    constraints: [
+        "<code>m == s.length</code>",
+        "<code>n == t.length</code>",
+        "<code>1 <= m, n <= 10<sup>5</sup></code>",
+        "<code>s</code> and <code>t</code> consist of uppercase and lowercase English letters."
+    ],
+    solutions: [
+        {
+            title: "Sliding Window with Frequency Count",
+            complexity: "O(m + n)",
+            content: {
+                intuition: "Expand the window to include all required characters, then contract to find the minimum valid window.",
+                approach: "1. Count character frequencies in t. 2. Use sliding window to track characters in s. 3. Expand right until all characters are included, then contract left to find minimum window.",
+                code: `class Solution {
+    public String minWindow(String s, String t) {
+        if (s.length() == 0 || t.length() == 0) return "";
+        
+        // Frequency count for characters in t
+        Map<Character, Integer> targetCounts = new HashMap<>();
+        for (char c : t.toCharArray()) {
+            targetCounts.put(c, targetCounts.getOrDefault(c, 0) + 1);
+        }
+        
+        int required = targetCounts.size();
+        int formed = 0;
+        int left = 0, right = 0;
+        int[] result = {-1, 0, 0}; // length, left, right
+        
+        Map<Character, Integer> windowCounts = new HashMap<>();
+        
+        while (right < s.length()) {
+            char c = s.charAt(right);
+            windowCounts.put(c, windowCounts.getOrDefault(c, 0) + 1);
+            
+            if (targetCounts.containsKey(c) && 
+                windowCounts.get(c).intValue() == targetCounts.get(c).intValue()) {
+                formed++;
+            }
+            
+            while (left <= right && formed == required) {
+                c = s.charAt(left);
+                // Save the smallest window
+                if (result[0] == -1 || right - left + 1 < result[0]) {
+                    result[0] = right - left + 1;
+                    result[1] = left;
+                    result[2] = right;
+                }
+                
+                windowCounts.put(c, windowCounts.get(c) - 1);
+                if (targetCounts.containsKey(c) && 
+                    windowCounts.get(c) < targetCounts.get(c)) {
+                    formed--;
+                }
+                
+                left++;
+            }
+            
+            right++;
+        }
+        
+        return result[0] == -1 ? "" : s.substring(result[1], result[2] + 1);
+    }
+}`,
+                analysis: {
+                    time: "O(m + n) - Where m is length of s and n is length of t",
+                    space: "O(m + n) - For storing frequency counts"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Substring with Concatenation of All Words", difficulty: "hard", category: "sliding-window" },
+        { title: "Minimum Size Subarray Sum", difficulty: "medium", category: "sliding-window" }
+    ]
+},
+{
+    id: 20,
+    title: "Sliding Window Maximum",
+    difficulty: "hard",
+    category: "sliding-window",
+    description: `You are given an array of integers <code>nums</code>, there is a sliding window of size <code>k</code> which is moving from the very left of the array to the very right. You can only see the <code>k</code> numbers in the window. Each time the sliding window moves right by one position.
+
+Return the <strong>max sliding window</strong>.`,
+    examples: [
+        {
+            input: "nums = [1,3,-1,-3,5,3,6,7], k = 3",
+            output: "[3,3,5,5,6,7]",
+            explanation: "Window positions and maxima:\n[1  3  -1] -3  5  3  6  7 => 3\n 1 [3  -1  -3] 5  3  6  7 => 3\n 1  3 [-1  -3  5] 3  6  7 => 5\n 1  3  -1 [-3  5  3] 6  7 => 5\n 1  3  -1  -3 [5  3  6] 7 => 6\n 1  3  -1  -3  5 [3  6  7] => 7"
+        },
+        {
+            input: "nums = [1], k = 1",
+            output: "[1]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= nums.length <= 10<sup>5</sup></code>",
+        "<code>-10<sup>4</sup> <= nums[i] <= 10<sup>4</sup></code>",
+        "<code>1 <= k <= nums.length</code>"
+    ],
+    solutions: [
+        {
+            title: "Monotonic Deque Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Maintain a deque that stores indices of elements in decreasing order, ensuring the front is always the current maximum.",
+                approach: "1. Process elements, removing from the deque any elements smaller than the current one. 2. Remove elements outside the window from the front. 3. The front of the deque is always the maximum for the current window.",
+                code: `class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || k <= 0) return new int[0];
+        
+        int n = nums.length;
+        int[] result = new int[n - k + 1];
+        Deque<Integer> deque = new ArrayDeque<>();
+        
+        for (int i = 0; i < n; i++) {
+            // Remove elements not in the current window
+            while (!deque.isEmpty() && deque.peek() < i - k + 1) {
+                deque.poll();
+            }
+            
+            // Remove smaller elements from the end
+            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
+                deque.pollLast();
+            }
+            
+            deque.offer(i);
+            
+            // Add to result when window is complete
+            if (i >= k - 1) {
+                result[i - k + 1] = nums[deque.peek()];
+            }
+        }
+        
+        return result;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Each element is processed exactly twice (added and removed once)",
+                    space: "O(k) - The deque can grow up to size k"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Minimum Window Substring", difficulty: "hard", category: "sliding-window" },
+        { title: "Longest Substring Without Repeating Characters", difficulty: "medium", category: "sliding-window" }
+    ]
+},
+
+{
+    id: 21,
+    title: "Valid Parentheses",
+    difficulty: "easy",
+    category: "stack",
+    description: `Given a string <code>s</code> containing just the characters <code>'('</code>, <code>')'</code>, <code>'{'</code>, <code>'}'</code>, <code>'['</code> and <code>']'</code>, determine if the input string is valid.
+
+An input string is valid if:
+1. Open brackets must be closed by the same type of brackets.
+2. Open brackets must be closed in the correct order.`,
+    examples: [
+        {
+            input: 's = "()"',
+            output: "true",
+            explanation: ""
+        },
+        {
+            input: 's = "()[]{}"',
+            output: "true",
+            explanation: ""
+        },
+        {
+            input: 's = "(]"',
+            output: "false",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= s.length <= 10<sup>4</sup></code>",
+        "<code>s</code> consists of parentheses only <code>'()[]{}'</code>."
+    ],
+    solutions: [
+        {
+            title: "Stack Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Use a stack to keep track of opening brackets and ensure they match closing brackets in correct order.",
+                approach: "1. Push opening brackets onto stack. 2. When encountering closing bracket, check if it matches top of stack. 3. Final stack should be empty.",
+                code: `class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '{' || c == '[') {
+                stack.push(c);
+            } else {
+                if (stack.isEmpty()) return false;
+                char top = stack.pop();
+                if ((c == ')' && top != '(') || 
+                    (c == '}' && top != '{') || 
+                    (c == ']' && top != '[')) {
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the string",
+                    space: "O(n) - Worst case all characters are opening brackets"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Generate Parentheses", difficulty: "medium", category: "backtracking" },
+        { title: "Longest Valid Parentheses", difficulty: "hard", category: "dynamic-programming" }
+    ]
+},
+{
+    id: 22,
+    title: "Min Stack",
+    difficulty: "medium",
+    category: "stack",
+    description: `Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the <code>MinStack</code> class:
+- <code>MinStack()</code> initializes the stack object.
+- <code>void push(int val)</code> pushes the element <code>val</code> onto the stack.
+- <code>void pop()</code> removes the element on the top of the stack.
+- <code>int top()</code> gets the top element of the stack.
+- <code>int getMin()</code> retrieves the minimum element in the stack.`,
+    examples: [
+        {
+            input: '["MinStack","push","push","push","getMin","pop","top","getMin"]\n[[],[-2],[0],[-3],[],[],[],[]]',
+            output: '[null,null,null,null,-3,null,0,-2]',
+            explanation: `MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin(); // return -3
+minStack.pop();
+minStack.top();    // return 0
+minStack.getMin(); // return -2`
+        }
+    ],
+    constraints: [
+        "<code>-2<sup>31</sup> <= val <= 2<sup>31</sup> - 1</code>",
+        "Methods <code>pop</code>, <code>top</code> and <code>getMin</code> will always be called on <strong>non-empty</strong> stacks.",
+        "At most <code>3 * 10<sup>4</sup></code> calls will be made to <code>push</code>, <code>pop</code>, <code>top</code>, and <code>getMin</code>."
+    ],
+    solutions: [
+        {
+            title: "Two Stacks Approach",
+            complexity: "O(1) for all operations",
+            content: {
+                intuition: "Maintain a separate stack to track minimum values at each level.",
+                approach: "Use two stacks - one for all elements and another for minimums. When pushing, update min stack if new value is <= current min.",
+                code: `class MinStack {
+    private Stack<Integer> stack;
+    private Stack<Integer> minStack;
+
+    public MinStack() {
+        stack = new Stack<>();
+        minStack = new Stack<>();
+    }
+    
+    public void push(int val) {
+        stack.push(val);
+        if (minStack.isEmpty() || val <= minStack.peek()) {
+            minStack.push(val);
+        }
+    }
+    
+    public void pop() {
+        if (stack.pop().equals(minStack.peek())) {
+            minStack.pop();
+        }
+    }
+    
+    public int top() {
+        return stack.peek();
+    }
+    
+    public int getMin() {
+        return minStack.peek();
+    }
+}`,
+                analysis: {
+                    time: "O(1) for all operations",
+                    space: "O(n) - Additional stack for minimums"
+                }
+            }
+        },
+        {
+            title: "Single Stack with Pairs",
+            complexity: "O(1) for all operations",
+            content: {
+                intuition: "Store each element along with the current minimum when it was pushed.",
+                approach: "Store pairs of (value, current_min) in a single stack. Update current_min when pushing new values.",
+                code: `class MinStack {
+    private Stack<int[]> stack;
+
+    public MinStack() {
+        stack = new Stack<>();
+    }
+    
+    public void push(int val) {
+        if (stack.isEmpty()) {
+            stack.push(new int[]{val, val});
+        } else {
+            int currentMin = stack.peek()[1];
+            stack.push(new int[]{val, Math.min(val, currentMin)});
+        }
+    }
+    
+    public void pop() {
+        stack.pop();
+    }
+    
+    public int top() {
+        return stack.peek()[0];
+    }
+    
+    public int getMin() {
+        return stack.peek()[1];
+    }
+}`,
+                analysis: {
+                    time: "O(1) for all operations",
+                    space: "O(n) - Each element stores additional minimum value"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Max Stack", difficulty: "easy", category: "stack" },
+        { title: "Sliding Window Maximum", difficulty: "hard", category: "heap" }
+    ]
+},
+{
+    id: 23,
+    title: "Evaluate Reverse Polish Notation",
+    difficulty: "medium",
+    category: "stack",
+    description: `Evaluate the value of an arithmetic expression in <a href="https://en.wikipedia.org/wiki/Reverse_Polish_notation" target="_blank">Reverse Polish Notation</a>.
+
+Valid operators are <code>+</code>, <code>-</code>, <code>*</code>, and <code>/</code>. Each operand may be an integer or another expression.
+
+<strong>Note</strong> that division between two integers should truncate toward zero.`,
+    examples: [
+        {
+            input: 'tokens = ["2","1","+","3","*"]',
+            output: "9",
+            explanation: "((2 + 1) * 3) = 9"
+        },
+        {
+            input: 'tokens = ["4","13","5","/","+"]',
+            output: "6",
+            explanation: "(4 + (13 / 5)) = 6"
+        },
+        {
+            input: 'tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]',
+            output: "22",
+            explanation: "((10 * (6 / ((9 + 3) * -11))) + 17) + 5 = 22"
+        }
+    ],
+    constraints: [
+        "<code>1 <= tokens.length <= 10<sup>4</sup></code>",
+        "<code>tokens[i]</code> is either an operator: <code>\"+\"</code>, <code>\"-\"</code>, <code>\"*\"</code>, or <code>\"/\"</code>, or an integer in the range <code>[-200, 200]</code>."
+    ],
+    solutions: [
+        {
+            title: "Stack Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Process tokens in order, using a stack to store operands until operators are encountered.",
+                approach: "1. Push numbers onto stack. 2. When encountering operator, pop top two numbers, apply operation, and push result back.",
+                code: `class Solution {
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        for (String token : tokens) {
+            if (token.equals("+")) {
+                stack.push(stack.pop() + stack.pop());
+            } else if (token.equals("-")) {
+                int b = stack.pop();
+                int a = stack.pop();
+                stack.push(a - b);
+            } else if (token.equals("*")) {
+                stack.push(stack.pop() * stack.pop());
+            } else if (token.equals("/")) {
+                int b = stack.pop();
+                int a = stack.pop();
+                stack.push(a / b);
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
+        }
+        return stack.pop();
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Process each token once",
+                    space: "O(n) - Stack can grow up to n/2+1 elements"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Basic Calculator", difficulty: "hard", category: "stack" },
+        { title: "Expression Add Operators", difficulty: "hard", category: "backtracking" }
+    ]
+},
+{
+    id: 24,
+    title: "Generate Parentheses",
+    difficulty: "medium",
+    category: "stack",
+    description: `Given <code>n</code> pairs of parentheses, write a function to <em>generate all combinations of well-formed parentheses</em>.`,
+    examples: [
+        {
+            input: "n = 3",
+            output: '["((()))","(()())","(())()","()(())","()()()"]',
+            explanation: ""
+        },
+        {
+            input: "n = 1",
+            output: '["()"]',
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= n <= 8</code>"
+    ],
+    solutions: [
+        {
+            title: "Backtracking Approach",
+            complexity: "O(4^n/√n)",
+            content: {
+                intuition: "Build valid combinations by tracking open and close counts, ensuring we never close more than we've opened.",
+                approach: "Recursively build strings, adding '(' if open < n and ')' if close < open.",
+                code: `class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> result = new ArrayList<>();
+        backtrack(result, "", 0, 0, n);
+        return result;
+    }
+    
+    private void backtrack(List<String> result, String current, int open, int close, int max) {
+        if (current.length() == max * 2) {
+            result.add(current);
+            return;
+        }
+        
+        if (open < max) {
+            backtrack(result, current + "(", open + 1, close, max);
+        }
+        if (close < open) {
+            backtrack(result, current + ")", open, close + 1, max);
+        }
+    }
+}`,
+                analysis: {
+                    time: "O(4^n/√n) - nth Catalan number",
+                    space: "O(4^n/√n) - To store all combinations"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Letter Combinations of a Phone Number", difficulty: "medium", category: "backtracking" },
+        { title: "Valid Parentheses", difficulty: "easy", category: "stack" }
+    ]
+},
+{
+    id: 25,
+    title: "Daily Temperatures",
+    difficulty: "medium",
+    category: "stack",
+    description: `Given an array of integers <code>temperatures</code> represents the daily temperatures, return an array <code>answer</code> such that <code>answer[i]</code> is the number of days you have to wait after the <code>i<sup>th</sup></code> day to get a warmer temperature. If there is no future day for which this is possible, keep <code>answer[i] == 0</code> instead.`,
+    examples: [
+        {
+            input: "temperatures = [73,74,75,71,69,72,76,73]",
+            output: "[1,1,4,2,1,1,0,0]",
+            explanation: ""
+        },
+        {
+            input: "temperatures = [30,40,50,60]",
+            output: "[1,1,1,0]",
+            explanation: ""
+        },
+        {
+            input: "temperatures = [30,60,90]",
+            output: "[1,1,0]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= temperatures.length <= 10<sup>5</sup></code>",
+        "<code>30 <= temperatures[i] <= 100</code>"
+    ],
+    solutions: [
+        {
+            title: "Monotonic Stack Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Use a stack to keep track of indices for which we haven't found a warmer day yet.",
+                approach: "Process temperatures in order, for each new temperature, pop all colder temperatures from stack and update their answer.",
+                code: `class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int[] answer = new int[temperatures.length];
+        Stack<Integer> stack = new Stack<>();
+        
+        for (int i = 0; i < temperatures.length; i++) {
+            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {
+                int idx = stack.pop();
+                answer[idx] = i - idx;
+            }
+            stack.push(i);
+        }
+        
+        return answer;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Each index is pushed and popped at most once",
+                    space: "O(n) - Stack can grow up to n elements"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Next Greater Element I", difficulty: "easy", category: "stack" },
+        { title: "Sliding Window Maximum", difficulty: "hard", category: "heap" }
+    ]
+},
+{
+    id: 26,
+    title: "Car Fleet",
+    difficulty: "medium",
+    category: "stack",
+    description: `There are <code>n</code> cars going to the same destination along a one-lane road. The destination is <code>target</code> miles away.
+
+You are given two integer arrays <code>position</code> and <code>speed</code>, both of length <code>n</code>, where <code>position[i]</code> is the position of the <code>i<sup>th</sup></code> car and <code>speed[i]</code> is the speed of the <code>i<sup>th</sup></code> car (in miles per hour).
+
+A car can never pass another car ahead of it, but it can catch up to it and drive bumper to bumper at the same speed. The faster car will <strong>slow down</strong> to match the slower car's speed. The distance between these two cars is ignored (i.e., they are assumed to have the same position).
+
+A <strong>car fleet</strong> is some non-empty set of cars driving at the same position and same speed. Note that a single car is also a car fleet.
+
+If a car catches up to a car fleet right at the destination point, it will still be considered as one car fleet.
+
+Return <em>the number of car fleets that will arrive at the destination</em>.`,
+    examples: [
+        {
+            input: "target = 12, position = [10,8,0,5,3], speed = [2,4,1,1,3]",
+            output: "3",
+            explanation: "The cars starting at 10 and 8 become a fleet at 12. The car at 0 doesn't catch up to any other car, so it is a fleet by itself. The cars at 5 and 3 become a fleet at 6, but they all meet the destination at the same time, so the answer is 3."
+        },
+        {
+            input: "target = 10, position = [3], speed = [3]",
+            output: "1",
+            explanation: "There is only one car, hence there is only one fleet."
+        },
+        {
+            input: "target = 100, position = [0,2,4], speed = [4,2,1]",
+            output: "1",
+            explanation: "The cars starting at 0 (speed 4) and 2 (speed 2) become a fleet at 4. The car starting at 4 (speed 1) catches up to them at 4, so all cars become one fleet at 4 and arrive at 100 together."
+        }
+    ],
+    constraints: [
+        "<code>n == position.length == speed.length</code>",
+        "<code>1 <= n <= 10<sup>5</sup></code>",
+        "<code>0 < target <= 10<sup>6</sup></code>",
+        "<code>0 <= position[i] < target</code>",
+        "<code>1 <= speed[i] <= 10<sup>6</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Monotonic Stack Approach",
+            complexity: "O(n log n)",
+            content: {
+                intuition: "Cars further along will form fleets that block cars behind them if they arrive earlier.",
+                approach: "1. Sort cars by position. 2. Calculate time to target for each car. 3. Use a stack to track fleets - if a car arrives before the fleet in front, it joins that fleet.",
+                code: `class Solution {
+    public int carFleet(int target, int[] position, int[] speed) {
+        int n = position.length;
+        if (n == 0) return 0;
+        
+        // Combine position and speed into cars array and sort by position
+        int[][] cars = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            cars[i][0] = position[i];
+            cars[i][1] = speed[i];
+        }
+        Arrays.sort(cars, (a, b) -> b[0] - a[0]);
+        
+        Stack<Double> stack = new Stack<>();
+        for (int[] car : cars) {
+            double time = (double)(target - car[0]) / car[1];
+            if (stack.isEmpty() || time > stack.peek()) {
+                stack.push(time);
+            }
+        }
+        
+        return stack.size();
+    }
+}`,
+                analysis: {
+                    time: "O(n log n) - Due to sorting",
+                    space: "O(n) - For storing cars and stack"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Daily Temperatures", difficulty: "medium", category: "stack" },
+        { title: "Number of Visible People in a Queue", difficulty: "hard", category: "stack" }
+    ]
+},
+{
+    id: 27,
+    title: "Largest Rectangle in Histogram",
+    difficulty: "hard",
+    category: "stack",
+    description: `Given an array of integers <code>heights</code> representing the histogram's bar height where the width of each bar is <code>1</code>, return <em>the area of the largest rectangle in the histogram</em>.`,
+    examples: [
+        {
+            input: "heights = [2,1,5,6,2,3]",
+            output: "10",
+            explanation: "The largest rectangle is shown in the red area, which has an area = 10 units."
+        },
+        {
+            input: "heights = [2,4]",
+            output: "4",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= heights.length <= 10<sup>5</sup></code>",
+        "<code>0 <= heights[i] <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Monotonic Stack Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "For each bar, find the first smaller bar to its left and right to determine width of largest rectangle containing that bar.",
+                approach: "Use a stack to track indices of increasing heights. When a smaller height is found, calculate areas for previous taller bars.",
+                code: `class Solution {
+    public int largestRectangleArea(int[] heights) {
+        Stack<Integer> stack = new Stack<>();
+        int maxArea = 0;
+        int n = heights.length;
+        
+        for (int i = 0; i <= n; i++) {
+            int h = (i == n) ? 0 : heights[i];
+            while (!stack.isEmpty() && h < heights[stack.peek()]) {
+                int height = heights[stack.pop()];
+                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
+                maxArea = Math.max(maxArea, height * width);
+            }
+            stack.push(i);
+        }
+        
+        return maxArea;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Each bar is pushed and popped once",
+                    space: "O(n) - Stack can grow up to n elements"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Maximal Rectangle", difficulty: "hard", category: "stack" },
+        { title: "Trapping Rain Water", difficulty: "hard", category: "two-pointers" }
+    ]
+},
+
+{
+    id: 28,
+    title: "Binary Search",
+    difficulty: "easy",
+    category: "binary-search",
+    description: `Given an array of integers <code>nums</code> which is sorted in ascending order, and an integer <code>target</code>, write a function to search <code>target</code> in <code>nums</code>. If <code>target</code> exists, then return its index. Otherwise, return <code>-1</code>.
+
+You must write an algorithm with <code>O(log n)</code> runtime complexity.`,
+    examples: [
+        {
+            input: "nums = [-1,0,3,5,9,12], target = 9",
+            output: "4",
+            explanation: "9 exists in nums and its index is 4"
+        },
+        {
+            input: "nums = [-1,0,3,5,9,12], target = 2",
+            output: "-1",
+            explanation: "2 does not exist in nums so return -1"
+        }
+    ],
+    constraints: [
+        "<code>1 <= nums.length <= 10<sup>4</sup></code>",
+        "<code>-10<sup>4</sup> < nums[i], target < 10<sup>4</sup></code>",
+        "All the integers in <code>nums</code> are <strong>unique</strong>.",
+        "<code>nums</code> is sorted in ascending order."
+    ],
+    solutions: [
+        {
+            title: "Standard Binary Search",
+            complexity: "O(log n)",
+            content: {
+                intuition: "Divide and conquer by repeatedly dividing the search interval in half.",
+                approach: "1. Compare target to middle element. 2. If equal, return index. 3. If target is smaller, search left half. 4. If target is larger, search right half.",
+                code: `class Solution {
+    public int search(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+}`,
+                analysis: {
+                    time: "O(log n) - Halving search space each iteration",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Search in Rotated Sorted Array", difficulty: "medium", category: "binary-search" },
+        { title: "First Bad Version", difficulty: "easy", category: "binary-search" }
+    ]
+},
+{
+    id: 29,
+    title: "Search a 2D Matrix",
+    difficulty: "medium",
+    category: "binary-search",
+    description: `Write an efficient algorithm that searches for a value <code>target</code> in an <code>m x n</code> integer matrix <code>matrix</code>. This matrix has the following properties:
+- Integers in each row are sorted from left to right.
+- The first integer of each row is greater than the last integer of the previous row.`,
+    examples: [
+        {
+            input: "matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3",
+            output: "true",
+            explanation: ""
+        },
+        {
+            input: "matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13",
+            output: "false",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>m == matrix.length</code>",
+        "<code>n == matrix[i].length</code>",
+        "<code>1 <= m, n <= 100</code>",
+        "<code>-10<sup>4</sup> <= matrix[i][j], target <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Two Binary Searches",
+            complexity: "O(log m + log n)",
+            content: {
+                intuition: "First find the correct row using binary search, then search within that row.",
+                approach: "1. Binary search to find potential row. 2. Binary search within selected row.",
+                code: `class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        int top = 0, bottom = m - 1;
+        int row = -1;
+        
+        // Find the correct row
+        while (top <= bottom) {
+            int mid = top + (bottom - top) / 2;
+            if (matrix[mid][0] <= target && target <= matrix[mid][n - 1]) {
+                row = mid;
+                break;
+            } else if (target < matrix[mid][0]) {
+                bottom = mid - 1;
+            } else {
+                top = mid + 1;
+            }
+        }
+        
+        if (row == -1) return false;
+        
+        // Search within the row
+        int left = 0, right = n - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (matrix[row][mid] == target) {
+                return true;
+            } else if (matrix[row][mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        
+        return false;
+    }
+}`,
+                analysis: {
+                    time: "O(log m + log n) - Two binary searches",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        },
+        {
+            title: "Single Binary Search (Treat as 1D Array)",
+            complexity: "O(log(mn))",
+            content: {
+                intuition: "Treat the 2D matrix as a 1D sorted array and perform a single binary search.",
+                approach: "Use modulo and division operations to map 1D index to 2D coordinates.",
+                code: `class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        int left = 0, right = m * n - 1;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            int midValue = matrix[mid / n][mid % n];
+            
+            if (midValue == target) {
+                return true;
+            } else if (midValue < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        
+        return false;
+    }
+}`,
+                analysis: {
+                    time: "O(log(mn)) - Single binary search over all elements",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Search in Rotated Sorted Array", difficulty: "medium", category: "binary-search" },
+        { title: "Find Peak Element", difficulty: "medium", category: "binary-search" }
+    ]
+},
+{
+    id: 30,
+    title: "Koko Eating Bananas",
+    difficulty: "medium",
+    category: "binary-search",
+    description: `Koko loves to eat bananas. There are <code>n</code> piles of bananas, the <code>i<sup>th</sup></code> pile has <code>piles[i]</code> bananas. The guards have gone and will come back in <code>h</code> hours.
+
+Koko can decide her bananas-per-hour eating speed of <code>k</code>. Each hour, she chooses some pile of bananas and eats <code>k</code> bananas from that pile. If the pile has less than <code>k</code> bananas, she eats all of them instead and will not eat from any other pile during this hour.
+
+Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
+
+Return the minimum integer <code>k</code> such that she can eat all the bananas within <code>h</code> hours.`,
+    examples: [
+        {
+            input: "piles = [3,6,7,11], h = 8",
+            output: "4",
+            explanation: ""
+        },
+        {
+            input: "piles = [30,11,23,4,20], h = 5",
+            output: "30",
+            explanation: ""
+        },
+        {
+            input: "piles = [30,11,23,4,20], h = 6",
+            output: "23",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= piles.length <= 10<sup>4</sup></code>",
+        "<code>piles.length <= h <= 10<sup>9</sup></code>",
+        "<code>1 <= piles[i] <= 10<sup>9</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Binary Search on Answer Space",
+            complexity: "O(n log m) where m is max pile",
+            content: {
+                intuition: "The minimum eating speed must be between 1 and max(piles). We can binary search this range.",
+                approach: "1. Binary search between 1 and max(piles). 2. For each mid value, calculate hours needed. 3. Adjust search range based on whether hours are <= h or > h.",
+                code: `class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int left = 1;
+        int right = 0;
+        for (int pile : piles) {
+            right = Math.max(right, pile);
+        }
+        
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (canEatAll(piles, h, mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        return left;
+    }
+    
+    private boolean canEatAll(int[] piles, int h, int k) {
+        int hours = 0;
+        for (int pile : piles) {
+            hours += (pile + k - 1) / k; // Equivalent to Math.ceil(pile / k)
+        }
+        return hours <= h;
+    }
+}`,
+                analysis: {
+                    time: "O(n log m) - Binary search takes O(log m) and each iteration is O(n)",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Minimum Number of Days to Make m Bouquets", difficulty: "medium", category: "binary-search" },
+        { title: "Find the Smallest Divisor Given a Threshold", difficulty: "medium", category: "binary-search" }
+    ]
+},
+{
+    id: 31,
+    title: "Find Minimum in Rotated Sorted Array",
+    difficulty: "medium",
+    category: "binary-search",
+    description: `Suppose an array of length <code>n</code> sorted in ascending order is rotated between <code>1</code> and <code>n</code> times. For example, the array <code>nums = [0,1,2,4,5,6,7]</code> might become:
+- <code>[4,5,6,7,0,1,2]</code> if it was rotated 4 times.
+- <code>[0,1,2,4,5,6,7]</code> if it was rotated 7 times.
+
+Given the sorted rotated array <code>nums</code> of <strong>unique</strong> elements, return the minimum element of this array.
+
+You must write an algorithm that runs in <code>O(log n)</code> time.`,
+    examples: [
+        {
+            input: "nums = [3,4,5,1,2]",
+            output: "1",
+            explanation: "The original array was [1,2,3,4,5] rotated 3 times."
+        },
+        {
+            input: "nums = [4,5,6,7,0,1,2]",
+            output: "0",
+            explanation: "The original array was [0,1,2,4,5,6,7] and it was rotated 4 times."
+        },
+        {
+            input: "nums = [11,13,15,17]",
+            output: "11",
+            explanation: "The original array was [11,13,15,17] and it was rotated 4 times."
+        }
+    ],
+    constraints: [
+        "<code>n == nums.length</code>",
+        "<code>1 <= n <= 5000</code>",
+        "<code>-5000 <= nums[i] <= 5000</code>",
+        "All the integers of <code>nums</code> are <strong>unique</strong>.",
+        "<code>nums</code> is sorted and rotated between <code>1</code> and <code>n</code> times."
+    ],
+    solutions: [
+        {
+            title: "Binary Search Approach",
+            complexity: "O(log n)",
+            content: {
+                intuition: "The minimum element is the only element where the previous element is greater than it.",
+                approach: "1. Compare middle element with rightmost element. 2. If nums[mid] > nums[right], search right half. 3. Else search left half including mid.",
+                code: `class Solution {
+    public int findMin(int[] nums) {
+        int left = 0, right = nums.length - 1;
+        
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            
+            if (nums[mid] > nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return nums[left];
+    }
+}`,
+                analysis: {
+                    time: "O(log n) - Halving search space each iteration",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Search in Rotated Sorted Array", difficulty: "medium", category: "binary-search" },
+        { title: "Find Peak Element", difficulty: "medium", category: "binary-search" }
+    ]
+},
+{
+    id: 32,
+    title: "Search in Rotated Sorted Array",
+    difficulty: "medium",
+    category: "binary-search",
+    description: `There is an integer array <code>nums</code> sorted in ascending order (with <strong>distinct</strong> values).
+
+Prior to being passed to your function, <code>nums</code> is <strong>possibly rotated</strong> at an unknown pivot index <code>k</code> (<code>1 <= k < nums.length</code>) such that the resulting array is <code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code> (0-indexed). For example, <code>[0,1,2,4,5,6,7]</code> might be rotated at pivot index 3 and become <code>[4,5,6,7,0,1,2]</code>.
+
+Given the array <code>nums</code> <strong>after</strong> the possible rotation and an integer <code>target</code>, return the index of <code>target</code> if it is in <code>nums</code>, or <code>-1</code> if it is not in <code>nums</code>.
+
+You must write an algorithm with <code>O(log n)</code> runtime complexity.`,
+    examples: [
+        {
+            input: "nums = [4,5,6,7,0,1,2], target = 0",
+            output: "4",
+            explanation: ""
+        },
+        {
+            input: "nums = [4,5,6,7,0,1,2], target = 3",
+            output: "-1",
+            explanation: ""
+        },
+        {
+            input: "nums = [1], target = 0",
+            output: "-1",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= nums.length <= 5000</code>",
+        "<code>-10<sup>4</sup> <= nums[i] <= 10<sup>4</sup></code>",
+        "All values of <code>nums</code> are <strong>unique</strong>.",
+        "<code>nums</code> is an ascending array that is possibly rotated.",
+        "<code>-10<sup>4</sup> <= target <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Binary Search with Pivot Detection",
+            complexity: "O(log n)",
+            content: {
+                intuition: "The array has two sorted parts. First find which part is sorted, then determine if target is in that part.",
+                approach: "1. Check if left half is sorted (nums[left] <= nums[mid]). 2. If target is in sorted range, search there. 3. Else search the other half.",
+                code: `class Solution {
+    public int search(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            
+            if (nums[mid] == target) {
+                return mid;
+            }
+            
+            // Left half is sorted
+            if (nums[left] <= nums[mid]) {
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } 
+            // Right half is sorted
+            else {
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        
+        return -1;
+    }
+}`,
+                analysis: {
+                    time: "O(log n) - Standard binary search",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Find Minimum in Rotated Sorted Array", difficulty: "medium", category: "binary-search" },
+        { title: "Search in Rotated Sorted Array II", difficulty: "medium", category: "binary-search" }
+    ]
+},
+{
+    id: 33,
+    title: "Time Based Key-Value Store",
+    difficulty: "medium",
+    category: "binary-search",
+    description: `Design a time-based key-value data structure that can store multiple values for the same key at different timestamps and retrieve the key's value at a certain timestamp.
+
+Implement the <code>TimeMap</code> class:
+- <code>TimeMap()</code> Initializes the object of the data structure.
+- <code>void set(String key, String value, int timestamp)</code> Stores the key <code>key</code> with the value <code>value</code> at the given time <code>timestamp</code>.
+- <code>String get(String key, int timestamp)</code> Returns a value such that <code>set</code> was called previously with <code>timestamp_prev <= timestamp</code>. If there are multiple such values, it returns the value associated with the largest <code>timestamp_prev</code>. If there are no values, it returns <code>""</code>.`,
+    examples: [
+        {
+            input: '["TimeMap","set","get","get","set","get","get"]\n[[],["foo","bar",1],["foo",1],["foo",3],["foo","bar2",4],["foo",4],["foo",5]]',
+            output: '[null,null,"bar","bar",null,"bar2","bar2"]',
+            explanation: `TimeMap timeMap = new TimeMap();
+timeMap.set("foo", "bar", 1);  // store the key "foo" and value "bar" along with timestamp = 1.
+timeMap.get("foo", 1);         // return "bar"
+timeMap.get("foo", 3);         // return "bar", since there is no value corresponding to foo at timestamp 3 and timestamp 2, then the only value is at timestamp 1 is "bar".
+timeMap.set("foo", "bar2", 4); // store the key "foo" and value "bar2" along with timestamp = 4.
+timeMap.get("foo", 4);         // return "bar2"
+timeMap.get("foo", 5);         // return "bar2"`
+        }
+    ],
+    constraints: [
+        "<code>1 <= key.length, value.length <= 100</code>",
+        "<code>key</code> and <code>value</code> consist of lowercase English letters and digits.",
+        "<code>1 <= timestamp <= 10<sup>7</sup></code>",
+        "All the timestamps <code>timestamp</code> of <code>set</code> are strictly increasing.",
+        "At most <code>2 * 10<sup>5</sup></code> calls will be made to <code>set</code> and <code>get</code>."
+    ],
+    solutions: [
+        {
+            title: "Hash Map with Binary Search",
+            complexity: "O(1) for set, O(log n) for get",
+            content: {
+                intuition: "Store values in a map with timestamps, then use binary search to find the closest timestamp <= target.",
+                approach: "1. Use a hash map where keys map to lists of (timestamp, value) pairs. 2. For get operations, perform binary search on the timestamp list.",
+                code: `class TimeMap {
+    private Map<String, List<Pair<Integer, String>>> map;
+
+    public TimeMap() {
+        map = new HashMap<>();
+    }
+    
+    public void set(String key, String value, int timestamp) {
+        if (!map.containsKey(key)) {
+            map.put(key, new ArrayList<>());
+        }
+        map.get(key).add(new Pair<>(timestamp, value));
+    }
+    
+    public String get(String key, int timestamp) {
+        if (!map.containsKey(key)) return "";
+        
+        List<Pair<Integer, String>> list = map.get(key);
+        int left = 0, right = list.size() - 1;
+        String result = "";
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (list.get(mid).getKey() <= timestamp) {
+                result = list.get(mid).getValue();
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        
+        return result;
+    }
+}`,
+                analysis: {
+                    time: "O(1) for set, O(log n) for get - Binary search on timestamps",
+                    space: "O(n) - Store all key-value pairs"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Snapshot Array", difficulty: "medium", category: "array" },
+        { title: "Design Log Storage System", difficulty: "medium", category: "design" }
+    ]
+},
+{
+    id: 34,
+    title: "Median of Two Sorted Arrays",
+    difficulty: "hard",
+    category: "binary-search",
+    description: `Given two sorted arrays <code>nums1</code> and <code>nums2</code> of size <code>m</code> and <code>n</code> respectively, return the <strong>median</strong> of the two sorted arrays.
+
+The overall run time complexity should be <code>O(log (m+n))</code>.`,
+    examples: [
+        {
+            input: "nums1 = [1,3], nums2 = [2]",
+            output: "2.00000",
+            explanation: "merged array = [1,2,3] and median is 2."
+        },
+        {
+            input: "nums1 = [1,2], nums2 = [3,4]",
+            output: "2.50000",
+            explanation: "merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5."
+        }
+    ],
+    constraints: [
+        "<code>nums1.length == m</code>",
+        "<code>nums2.length == n</code>",
+        "<code>0 <= m <= 1000</code>",
+        "<code>0 <= n <= 1000</code>",
+        "<code>1 <= m + n <= 2000</code>",
+        "<code>-10<sup>6</sup> <= nums1[i], nums2[i] <= 10<sup>6</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Binary Search Approach",
+            complexity: "O(log(min(m,n)))",
+            content: {
+                intuition: "The median divides the merged array into two equal parts. We can perform binary search on the smaller array to find the correct partition.",
+                approach: "1. Ensure nums1 is the smaller array. 2. Perform binary search on nums1 to find partition points. 3. Check if partition creates valid left and right halves. 4. Adjust partitions based on comparison of elements around partition points.",
+                code: `class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        // Ensure nums1 is the smaller array
+        if (nums1.length > nums2.length) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+        
+        int m = nums1.length, n = nums2.length;
+        int left = 0, right = m;
+        int halfLen = (m + n + 1) / 2;
+        
+        while (left <= right) {
+            int i = (left + right) / 2; // Partition for nums1
+            int j = halfLen - i;        // Partition for nums2
+            
+            if (i < m && nums2[j-1] > nums1[i]) {
+                left = i + 1; // i is too small
+            } else if (i > 0 && nums1[i-1] > nums2[j]) {
+                right = i - 1; // i is too big
+            } else {
+                // Found the correct partition
+                int maxLeft;
+                if (i == 0) maxLeft = nums2[j-1];
+                else if (j == 0) maxLeft = nums1[i-1];
+                else maxLeft = Math.max(nums1[i-1], nums2[j-1]);
+                
+                if ((m + n) % 2 == 1) {
+                    return maxLeft;
+                }
+                
+                int minRight;
+                if (i == m) minRight = nums2[j];
+                else if (j == n) minRight = nums1[i];
+                else minRight = Math.min(nums1[i], nums2[j]);
+                
+                return (maxLeft + minRight) / 2.0;
+            }
+        }
+        
+        return 0.0;
+    }
+}`,
+                analysis: {
+                    time: "O(log(min(m,n))) - Binary search on the smaller array",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Search in Rotated Sorted Array", difficulty: "medium", category: "binary-search" },
+        { title: "Kth Smallest Element in a Sorted Matrix", difficulty: "medium", category: "binary-search" }
+    ]
+},
+{
+    id: 35,
+    title: "Reverse Linked List",
+    difficulty: "easy",
+    category: "linked-list",
+    description: `Given the <code>head</code> of a singly linked list, reverse the list, and return the reversed list.`,
+    examples: [
+        {
+            input: "head = [1,2,3,4,5]",
+            output: "[5,4,3,2,1]",
+            explanation: ""
+        },
+        {
+            input: "head = [1,2]",
+            output: "[2,1]",
+            explanation: ""
+        },
+        {
+            input: "head = []",
+            output: "[]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the list is the range <code>[0, 5000]</code>.",
+        "<code>-5000 <= Node.val <= 5000</code>"
+    ],
+    solutions: [
+        {
+            title: "Iterative Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Change each node's next pointer to point to its previous node.",
+                approach: "Use three pointers: previous, current, and next to reverse links one by one.",
+                code: `/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        
+        while (curr != null) {
+            ListNode nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        
+        return prev;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the list",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        },
+        {
+            title: "Recursive Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Recursively reverse the rest of the list and link current node to the reversed list.",
+                approach: "Base case handles empty list or single node. Recursive step reverses sublist and links current node.",
+                code: `class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        
+        ListNode reversed = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        
+        return reversed;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Recursively visits each node once",
+                    space: "O(n) - Recursion stack space"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Reverse Linked List II", difficulty: "medium", category: "linked-list" },
+        { title: "Palindrome Linked List", difficulty: "easy", category: "linked-list" }
+    ]
+},
+{
+    id: 36,
+    title: "Merge Two Sorted Lists",
+    difficulty: "easy",
+    category: "linked-list",
+    description: `You are given the heads of two sorted linked lists <code>list1</code> and <code>list2</code>.
+
+Merge the two lists in a one <strong>sorted</strong> list. The list should be made by splicing together the nodes of the first two lists.
+
+Return the head of the merged linked list.`,
+    examples: [
+        {
+            input: "list1 = [1,2,4], list2 = [1,3,4]",
+            output: "[1,1,2,3,4,4]",
+            explanation: ""
+        },
+        {
+            input: "list1 = [], list2 = []",
+            output: "[]",
+            explanation: ""
+        },
+        {
+            input: "list1 = [], list2 = [0]",
+            output: "[0]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in both lists is in the range <code>[0, 50]</code>.",
+        "<code>-100 <= Node.val <= 100</code>",
+        "Both <code>list1</code> and <code>list2</code> are sorted in <strong>non-decreasing</strong> order."
+    ],
+    solutions: [
+        {
+            title: "Iterative Approach",
+            complexity: "O(n + m)",
+            content: {
+                intuition: "Compare nodes from both lists and link the smaller one to the result.",
+                approach: "Use a dummy node to build the merged list. Compare and append nodes until one list is exhausted.",
+                code: `class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode dummy = new ListNode(-1);
+        ListNode curr = dummy;
+        
+        while (list1 != null && list2 != null) {
+            if (list1.val <= list2.val) {
+                curr.next = list1;
+                list1 = list1.next;
+            } else {
+                curr.next = list2;
+                list2 = list2.next;
+            }
+            curr = curr.next;
+        }
+        
+        curr.next = list1 == null ? list2 : list1;
+        
+        return dummy.next;
+    }
+}`,
+                analysis: {
+                    time: "O(n + m) - Where n and m are lengths of the two lists",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        },
+        {
+            title: "Recursive Approach",
+            complexity: "O(n + m)",
+            content: {
+                intuition: "Recursively merge the lists by always choosing the smaller current node.",
+                approach: "Base cases handle when one list is empty. Recursive step compares current nodes and links the smaller one.",
+                code: `class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if (list1 == null) return list2;
+        if (list2 == null) return list1;
+        
+        if (list1.val < list2.val) {
+            list1.next = mergeTwoLists(list1.next, list2);
+            return list1;
+        } else {
+            list2.next = mergeTwoLists(list1, list2.next);
+            return list2;
+        }
+    }
+}`,
+                analysis: {
+                    time: "O(n + m) - Recursively visits each node once",
+                    space: "O(n + m) - Recursion stack space"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Merge k Sorted Lists", difficulty: "hard", category: "linked-list" },
+        { title: "Merge Sorted Array", difficulty: "easy", category: "array" }
+    ]
+},
+{
+    id: 37,
+    title: "Linked List Cycle",
+    difficulty: "easy",
+    category: "linked-list",
+    description: `Given <code>head</code>, the head of a linked list, determine if the linked list has a cycle in it.
+
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the <code>next</code> pointer. Internally, <code>pos</code> is used to denote the index of the node that tail's <code>next</code> pointer is connected to. <strong>Note that <code>pos</code> is not passed as a parameter</strong>.
+
+Return <code>true</code> if there is a cycle in the linked list. Otherwise, return <code>false</code>.`,
+    examples: [
+        {
+            input: "head = [3,2,0,-4], pos = 1",
+            output: "true",
+            explanation: "There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed)."
+        },
+        {
+            input: "head = [1,2], pos = 0",
+            output: "true",
+            explanation: "There is a cycle in the linked list, where the tail connects to the 0th node."
+        },
+        {
+            input: "head = [1], pos = -1",
+            output: "false",
+            explanation: "There is no cycle in the linked list."
+        }
+    ],
+    constraints: [
+        "The number of the nodes in the list is in the range <code>[0, 10<sup>4</sup>]</code>.",
+        "<code>-10<sup>5</sup> <= Node.val <= 10<sup>5</sup></code>",
+        "<code>pos</code> is <code>-1</code> or a <strong>valid index</strong> in the linked-list."
+    ],
+    solutions: [
+        {
+            title: "Floyd's Cycle-Finding Algorithm",
+            complexity: "O(n)",
+            content: {
+                intuition: "If there's a cycle, a fast pointer will eventually catch up to a slow pointer.",
+                approach: "Use two pointers - slow moves one step at a time, fast moves two steps. If they meet, there's a cycle.",
+                code: `public class Solution {
+    public boolean hasCycle(ListNode head) {
+        if (head == null) return false;
+        
+        ListNode slow = head;
+        ListNode fast = head.next;
+        
+        while (slow != fast) {
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        
+        return true;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Linear time complexity",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Linked List Cycle II", difficulty: "medium", category: "linked-list" },
+        { title: "Happy Number", difficulty: "easy", category: "hash-table" }
+    ]
+},
+{
+    id: 38,
+    title: "Reorder List",
+    difficulty: "medium",
+    category: "linked-list",
+    description: `You are given the head of a singly linked-list. The list can be represented as:
+
+<code>L<sub>0</sub> → L<sub>1</sub> → … → L<sub>n - 1</sub> → L<sub>n</sub></code>
+
+Reorder the list to be on the following form:
+
+<code>L<sub>0</sub> → L<sub>n</sub> → L<sub>1</sub> → L<sub>n - 1</sub> → L<sub>2</sub> → L<sub>n - 2</sub> → …</code>
+
+You may not modify the values in the list's nodes. Only nodes themselves may be changed.`,
+    examples: [
+        {
+            input: "head = [1,2,3,4]",
+            output: "[1,4,2,3]",
+            explanation: ""
+        },
+        {
+            input: "head = [1,2,3,4,5]",
+            output: "[1,5,2,4,3]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the list is in the range <code>[1, 5 * 10<sup>4</sup>]</code>.",
+        "<code>1 <= Node.val <= 1000</code>"
+    ],
+    solutions: [
+        {
+            title: "Three Steps Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Find the middle, reverse the second half, then merge the two halves alternately.",
+                approach: "1. Find middle with slow/fast pointers. 2. Reverse second half. 3. Merge two halves.",
+                code: `class Solution {
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) return;
+        
+        // Step 1: Find the middle
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        
+        // Step 2: Reverse the second half
+        ListNode prev = null, curr = slow, next;
+        while (curr != null) {
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        
+        // Step 3: Merge the two halves
+        ListNode first = head, second = prev;
+        while (second.next != null) {
+            ListNode temp1 = first.next;
+            ListNode temp2 = second.next;
+            
+            first.next = second;
+            second.next = temp1;
+            
+            first = temp1;
+            second = temp2;
+        }
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Three linear passes",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Reverse Linked List", difficulty: "easy", category: "linked-list" },
+        { title: "Palindrome Linked List", difficulty: "easy", category: "linked-list" }
+    ]
+},
+{
+    id: 39,
+    title: "Remove Nth Node From End of List",
+    difficulty: "medium",
+    category: "linked-list",
+    description: `Given the <code>head</code> of a linked list, remove the <code>n<sup>th</sup></code> node from the end of the list and return its head.`,
+    examples: [
+        {
+            input: "head = [1,2,3,4,5], n = 2",
+            output: "[1,2,3,5]",
+            explanation: ""
+        },
+        {
+            input: "head = [1], n = 1",
+            output: "[]",
+            explanation: ""
+        },
+        {
+            input: "head = [1,2], n = 1",
+            output: "[1]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the list is <code>sz</code>.",
+        "<code>1 <= sz <= 30</code>",
+        "<code>0 <= Node.val <= 100</code>",
+        "<code>1 <= n <= sz</code>"
+    ],
+    solutions: [
+        {
+            title: "Two Pass Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "First find length of list, then calculate position to remove.",
+                approach: "1. Get list length. 2. Calculate position from start. 3. Remove node at that position.",
+                code: `class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        
+        int length = 0;
+        ListNode curr = head;
+        while (curr != null) {
+            length++;
+            curr = curr.next;
+        }
+        
+        length -= n;
+        curr = dummy;
+        while (length > 0) {
+            length--;
+            curr = curr.next;
+        }
+        
+        curr.next = curr.next.next;
+        return dummy.next;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Two passes through the list",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        },
+        {
+            title: "One Pass Approach (Two Pointers)",
+            complexity: "O(n)",
+            content: {
+                intuition: "Use two pointers with n nodes apart so when fast reaches end, slow is at node to remove.",
+                approach: "1. Move fast pointer n nodes ahead. 2. Move both until fast reaches end. 3. Remove slow's next node.",
+                code: `class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        
+        ListNode slow = dummy, fast = dummy;
+        
+        // Move fast n nodes ahead
+        for (int i = 0; i <= n; i++) {
+            fast = fast.next;
+        }
+        
+        // Move both until fast reaches end
+        while (fast != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        
+        // Remove the node
+        slow.next = slow.next.next;
+        return dummy.next;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Single pass through the list",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Swapping Nodes in a Linked List", difficulty: "medium", category: "linked-list" },
+        { title: "Delete Node in a Linked List", difficulty: "easy", category: "linked-list" }
+    ]
+},
+{
+    id: 40,
+    title: "Copy List with Random Pointer",
+    difficulty: "medium",
+    category: "linked-list",
+    description: `A linked list of length <code>n</code> is given such that each node contains an additional random pointer, which could point to any node in the list, or <code>null</code>.
+
+Construct a <a href="https://en.wikipedia.org/wiki/Object_copying#Deep_copy" target="_blank">deep copy</a> of the list. The deep copy should consist of exactly <code>n</code> brand new nodes, where each new node has its value set to the value of its corresponding original node. Both the <code>next</code> and <code>random</code> pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state. <strong>None of the pointers in the new list should point to nodes in the original list</strong>.
+
+Return <em>the head of the copied linked list</em>.`,
+    examples: [
+        {
+            input: "head = [[7,null],[13,0],[11,4],[10,2],[1,0]]",
+            output: "[[7,null],[13,0],[11,4],[10,2],[1,0]]",
+            explanation: ""
+        },
+        {
+            input: "head = [[1,1],[2,1]]",
+            output: "[[1,1],[2,1]]",
+            explanation: ""
+        },
+        {
+            input: "head = [[3,null],[3,0],[3,null]]",
+            output: "[[3,null],[3,0],[3,null]]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>0 <= n <= 1000</code>",
+        "<code>-10<sup>4</sup> <= Node.val <= 10<sup>4</sup></code>",
+        "<code>Node.random</code> is <code>null</code> or is pointing to some node in the linked list."
+    ],
+    solutions: [
+        {
+            title: "Hash Map Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Use a hash map to maintain mapping between original and copied nodes.",
+                approach: "1. First pass: create all nodes and store mapping. 2. Second pass: assign next and random pointers using the map.",
+                code: `class Solution {
+    public Node copyRandomList(Node head) {
+        if (head == null) return null;
+        
+        Map<Node, Node> map = new HashMap<>();
+        
+        // First pass: create all nodes and store mapping
+        Node curr = head;
+        while (curr != null) {
+            map.put(curr, new Node(curr.val));
+            curr = curr.next;
+        }
+        
+        // Second pass: assign next and random pointers
+        curr = head;
+        while (curr != null) {
+            Node copy = map.get(curr);
+            copy.next = map.get(curr.next);
+            copy.random = map.get(curr.random);
+            curr = curr.next;
+        }
+        
+        return map.get(head);
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Two passes through the list",
+                    space: "O(n) - For the hash map"
+                }
+            }
+        },
+        {
+            title: "O(1) Space Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Interweave original and copied nodes to eliminate need for hash map.",
+                approach: "1. Create copied nodes next to originals. 2. Assign random pointers. 3. Separate the two lists.",
+                code: `class Solution {
+    public Node copyRandomList(Node head) {
+        if (head == null) return null;
+        
+        // Step 1: Create copied nodes next to originals
+        Node curr = head;
+        while (curr != null) {
+            Node copy = new Node(curr.val);
+            copy.next = curr.next;
+            curr.next = copy;
+            curr = copy.next;
+        }
+        
+        // Step 2: Assign random pointers
+        curr = head;
+        while (curr != null) {
+            if (curr.random != null) {
+                curr.next.random = curr.random.next;
+            }
+            curr = curr.next.next;
+        }
+        
+        // Step 3: Separate the two lists
+        curr = head;
+        Node dummy = new Node(0);
+        Node copyPrev = dummy;
+        
+        while (curr != null) {
+            Node next = curr.next.next;
+            
+            // Extract the copy
+            Node copy = curr.next;
+            copyPrev.next = copy;
+            copyPrev = copy;
+            
+            // Restore the original list
+            curr.next = next;
+            curr = next;
+        }
+        
+        return dummy.next;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Three passes through the list",
+                    space: "O(1) - Constant space used (excluding output)"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Clone Graph", difficulty: "medium", category: "graph" },
+        { title: "Clone Binary Tree With Random Pointer", difficulty: "medium", category: "tree" }
+    ]
+},
+{
+    id: 41,
+    title: "Add Two Numbers",
+    difficulty: "medium",
+    category: "linked-list",
+    description: `You are given two <strong>non-empty</strong> linked lists representing two non-negative integers. The digits are stored in <strong>reverse order</strong>, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.`,
+    examples: [
+        {
+            input: "l1 = [2,4,3], l2 = [5,6,4]",
+            output: "[7,0,8]",
+            explanation: "342 + 465 = 807."
+        },
+        {
+            input: "l1 = [0], l2 = [0]",
+            output: "[0]",
+            explanation: ""
+        },
+        {
+            input: "l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]",
+            output: "[8,9,9,9,0,0,0,1]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in each linked list is in the range <code>[1, 100]</code>.",
+        "<code>0 <= Node.val <= 9</code>",
+        "It is guaranteed that the list represents a number that does not have leading zeros."
+    ],
+    solutions: [
+        {
+            title: "Elementary Math Approach",
+            complexity: "O(max(m,n))",
+            content: {
+                intuition: "Simulate digit-by-digit addition while handling carry-over.",
+                approach: "1. Initialize dummy head. 2. Iterate through lists, sum digits with carry. 3. Create new nodes for result.",
+                code: `class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0);
+        ListNode curr = dummy;
+        int carry = 0;
+        
+        while (l1 != null || l2 != null || carry != 0) {
+            int x = (l1 != null) ? l1.val : 0;
+            int y = (l2 != null) ? l2.val : 0;
+            
+            int sum = x + y + carry;
+            carry = sum / 10;
+            curr.next = new ListNode(sum % 10);
+            curr = curr.next;
+            
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+        }
+        
+        return dummy.next;
+    }
+}`,
+                analysis: {
+                    time: "O(max(m,n)) - Where m and n are lengths of the two lists",
+                    space: "O(max(m,n)) - For the result list"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Multiply Strings", difficulty: "medium", category: "string" },
+        { title: "Add Binary", difficulty: "easy", category: "bit-manipulation" }
+    ]
+},
+{
+    id: 42,
+    title: "Find the Duplicate Number",
+    difficulty: "medium",
+    category: "linked-list",
+    description: `Given an array of integers <code>nums</code> containing <code>n + 1</code> integers where each integer is in the range <code>[1, n]</code> inclusive.
+
+There is only <strong>one repeated number</strong> in <code>nums</code>, return this repeated number.
+
+You must solve the problem <strong>without</strong> modifying the array <code>nums</code> and uses only constant extra space.`,
+    examples: [
+        {
+            input: "nums = [1,3,4,2,2]",
+            output: "2",
+            explanation: ""
+        },
+        {
+            input: "nums = [3,1,3,4,2]",
+            output: "3",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>1 <= n <= 10<sup>5</sup></code>",
+        "<code>nums.length == n + 1</code>",
+        "<code>1 <= nums[i] <= n</code>",
+        "All the integers in <code>nums</code> appear only <strong>once</strong> except for <strong>precisely one integer</strong> which appears <strong>two or more</strong> times."
+    ],
+    solutions: [
+        {
+            title: "Floyd's Tortoise and Hare (Cycle Detection)",
+            complexity: "O(n)",
+            content: {
+                intuition: "Treat array values as pointers to form a linked list with a cycle (duplicate creates cycle).",
+                approach: "1. Find intersection point of slow/fast pointers. 2. Find entrance to cycle (duplicate).",
+                code: `class Solution {
+    public int findDuplicate(int[] nums) {
+        // Phase 1: Find intersection point
+        int slow = nums[0], fast = nums[0];
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        
+        // Phase 2: Find entrance to cycle
+        slow = nums[0];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        
+        return slow;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Linear time complexity",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "First Missing Positive", difficulty: "hard", category: "array" },
+        { title: "Single Number", difficulty: "easy", category: "bit-manipulation" }
+    ]
+},
+{
+    id: 43,
+    title: "LRU Cache",
+    difficulty: "medium",
+    category: "linked-list",
+    description: `Design a data structure that follows the constraints of a <strong>Least Recently Used (LRU) cache</strong>.
+
+Implement the <code>LRUCache</code> class:
+- <code>LRUCache(int capacity)</code> Initialize the LRU cache with <strong>positive</strong> size <code>capacity</code>.
+- <code>int get(int key)</code> Return the value of the <code>key</code> if the key exists, otherwise return <code>-1</code>.
+- <code>void put(int key, int value)</code> Update the value of the <code>key</code> if the <code>key</code> exists. Otherwise, add the <code>key-value</code> pair to the cache. If the number of keys exceeds the <code>capacity</code> from this operation, <strong>evict</strong> the least recently used key.
+
+The functions <code>get</code> and <code>put</code> must each run in <code>O(1)</code> average time complexity.`,
+    examples: [
+        {
+            input: '["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]\n[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]',
+            output: '[null, null, null, 1, null, -1, null, -1, 3, 4]',
+            explanation: `LRUCache lRUCache = new LRUCache(2);
+lRUCache.put(1, 1); // cache is {1=1}
+lRUCache.put(2, 2); // cache is {1=1, 2=2}
+lRUCache.get(1);    // return 1
+lRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}
+lRUCache.get(2);    // returns -1 (not found)
+lRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}
+lRUCache.get(1);    // return -1 (not found)
+lRUCache.get(3);    // return 3
+lRUCache.get(4);    // return 4`
+        }
+    ],
+    constraints: [
+        "<code>1 <= capacity <= 3000</code>",
+        "<code>0 <= key <= 10<sup>4</sup></code>",
+        "<code>0 <= value <= 10<sup>5</sup></code>",
+        "At most <code>2 * 10<sup>5</sup></code> calls will be made to <code>get</code> and <code>put</code>."
+    ],
+    solutions: [
+        {
+            title: "Hash Map + Doubly Linked List",
+            complexity: "O(1) for both get and put",
+            content: {
+                intuition: "Use hash map for O(1) access and doubly linked list to maintain order.",
+                approach: "1. Use hash map to store key-node pairs. 2. Use doubly linked list to track usage order. 3. Move accessed nodes to head. 4. Evict from tail when capacity exceeded.",
+                code: `class LRUCache {
+    class DLinkedNode {
+        int key;
+        int value;
+        DLinkedNode prev;
+        DLinkedNode next;
+    }
+    
+    private void addNode(DLinkedNode node) {
+        // Always add new node right after head
+        node.prev = head;
+        node.next = head.next;
+        
+        head.next.prev = node;
+        head.next = node;
+    }
+    
+    private void removeNode(DLinkedNode node) {
+        DLinkedNode prev = node.prev;
+        DLinkedNode next = node.next;
+        
+        prev.next = next;
+        next.prev = prev;
+    }
+    
+    private void moveToHead(DLinkedNode node) {
+        removeNode(node);
+        addNode(node);
+    }
+    
+    private DLinkedNode popTail() {
+        DLinkedNode res = tail.prev;
+        removeNode(res);
+        return res;
+    }
+    
+    private Map<Integer, DLinkedNode> cache = new HashMap<>();
+    private int size;
+    private int capacity;
+    private DLinkedNode head, tail;
+    
+    public LRUCache(int capacity) {
+        this.size = 0;
+        this.capacity = capacity;
+        
+        head = new DLinkedNode();
+        tail = new DLinkedNode();
+        
+        head.next = tail;
+        tail.prev = head;
+    }
+    
+    public int get(int key) {
+        DLinkedNode node = cache.get(key);
+        if (node == null) return -1;
+        
+        // Move the accessed node to the head
+        moveToHead(node);
+        
+        return node.value;
+    }
+    
+    public void put(int key, int value) {
+        DLinkedNode node = cache.get(key);
+        
+        if (node == null) {
+            DLinkedNode newNode = new DLinkedNode();
+            newNode.key = key;
+            newNode.value = value;
+            
+            cache.put(key, newNode);
+            addNode(newNode);
+            
+            size++;
+            
+            if (size > capacity) {
+                // Pop the tail
+                DLinkedNode tail = popTail();
+                cache.remove(tail.key);
+                size--;
+            }
+        } else {
+            // Update the value
+            node.value = value;
+            moveToHead(node);
+        }
+    }
+}`,
+                analysis: {
+                    time: "O(1) for both get and put operations",
+                    space: "O(capacity) - For the hash map and linked list"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "LFU Cache", difficulty: "hard", category: "design" },
+        { title: "Design In-Memory File System", difficulty: "hard", category: "design" }
+    ]
+},
+{
+    id: 44,
+    title: "Merge k Sorted Lists",
+    difficulty: "hard",
+    category: "linked-list",
+    description: `You are given an array of <code>k</code> linked-lists <code>lists</code>, each linked-list is sorted in ascending order.
+
+<em>Merge all the linked-lists into one sorted linked-list and return it.</em>`,
+    examples: [
+        {
+            input: "lists = [[1,4,5],[1,3,4],[2,6]]",
+            output: "[1,1,2,3,4,4,5,6]",
+            explanation: "The linked-lists are:\n1->4->5\n1->3->4\n2->6\nmerging them into one sorted list:\n1->1->2->3->4->4->5->6"
+        },
+        {
+            input: "lists = []",
+            output: "[]",
+            explanation: ""
+        },
+        {
+            input: "lists = [[]]",
+            output: "[]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "<code>k == lists.length</code>",
+        "<code>0 <= k <= 10<sup>4</sup></code>",
+        "<code>0 <= lists[i].length <= 500</code>",
+        "<code>-10<sup>4</sup> <= lists[i][j] <= 10<sup>4</sup></code>",
+        "<code>lists[i]</code> is sorted in <strong>ascending order</strong>.",
+        "The sum of <code>lists[i].length</code> will not exceed <code>10<sup>4</sup></code>."
+    ],
+    solutions: [
+        {
+            title: "Priority Queue (Min-Heap) Approach",
+            complexity: "O(n log k)",
+            content: {
+                intuition: "Always extract the smallest element from among the k lists.",
+                approach: "1. Add first node of each list to min-heap. 2. Extract min and add to result. 3. Add next node from extracted list to heap.",
+                code: `class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) return null;
+        
+        PriorityQueue<ListNode> minHeap = new PriorityQueue<>((a, b) -> a.val - b.val);
+        
+        // Add first node of each list to the heap
+        for (ListNode node : lists) {
+            if (node != null) {
+                minHeap.add(node);
+            }
+        }
+        
+        ListNode dummy = new ListNode(0);
+        ListNode curr = dummy;
+        
+        while (!minHeap.isEmpty()) {
+            ListNode minNode = minHeap.poll();
+            curr.next = minNode;
+            curr = curr.next;
+            
+            if (minNode.next != null) {
+                minHeap.add(minNode.next);
+            }
+        }
+        
+        return dummy.next;
+    }
+}`,
+                analysis: {
+                    time: "O(n log k) - Where n is total nodes and k is number of lists",
+                    space: "O(k) - For the priority queue"
+                }
+            }
+        },
+        {
+            title: "Divide and Conquer (Merge Sort)",
+            complexity: "O(n log k)",
+            content: {
+                intuition: "Recursively merge pairs of lists until one remains.",
+                approach: "1. Pair up lists and merge each pair. 2. Repeat until only one list remains.",
+                code: `class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) return null;
+        return mergeLists(lists, 0, lists.length - 1);
+    }
+    
+    private ListNode mergeLists(ListNode[] lists, int start, int end) {
+        if (start == end) return lists[start];
+        
+        int mid = start + (end - start) / 2;
+        ListNode left = mergeLists(lists, start, mid);
+        ListNode right = mergeLists(lists, mid + 1, end);
+        
+        return mergeTwoLists(left, right);
+    }
+    
+    private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0);
+        ListNode curr = dummy;
+        
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                curr.next = l1;
+                l1 = l1.next;
+            } else {
+                curr.next = l2;
+                l2 = l2.next;
+            }
+            curr = curr.next;
+        }
+        
+        curr.next = l1 == null ? l2 : l1;
+        return dummy.next;
+    }
+}`,
+                analysis: {
+                    time: "O(n log k) - Merge process takes O(n) and we do O(log k) merges",
+                    space: "O(log k) - Recursion stack space"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Merge Two Sorted Lists", difficulty: "easy", category: "linked-list" },
+        { title: "Ugly Number II", difficulty: "medium", category: "math" }
+    ]
+},
+{
+    id: 45,
+    title: "Reverse Nodes in k-Group",
+    difficulty: "hard",
+    category: "linked-list",
+    description: `Given the <code>head</code> of a linked list, reverse the nodes of the list <code>k</code> at a time, and return the modified list.
+
+<code>k</code> is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of <code>k</code> then left-out nodes, in the end, should remain as it is.
+
+You may not alter the values in the list's nodes, only nodes themselves may be changed.`,
+    examples: [
+        {
+            input: "head = [1,2,3,4,5], k = 2",
+            output: "[2,1,4,3,5]",
+            explanation: ""
+        },
+        {
+            input: "head = [1,2,3,4,5], k = 3",
+            output: "[3,2,1,4,5]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the list is <code>n</code>.",
+        "<code>1 <= k <= n <= 5000</code>",
+        "<code>0 <= Node.val <= 1000</code>"
+    ],
+    solutions: [
+        {
+            title: "Iterative Approach with Helper Functions",
+            complexity: "O(n)",
+            content: {
+                intuition: "Reverse each k-group individually while maintaining connections between groups.",
+                approach: "1. Check if k nodes remain. 2. Reverse k nodes. 3. Connect to previous and next groups.",
+                code: `class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode prevGroupEnd = dummy;
+        
+        while (true) {
+            // Check if there are k nodes left
+            ListNode kth = getKth(prevGroupEnd, k);
+            if (kth == null) break;
+            
+            ListNode nextGroupStart = kth.next;
+            
+            // Reverse the k nodes
+            ListNode curr = prevGroupEnd.next;
+            ListNode prev = nextGroupStart;
+            
+            while (curr != nextGroupStart) {
+                ListNode temp = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = temp;
+            }
+            
+            // Connect to previous group
+            ListNode newGroupEnd = prevGroupEnd.next;
+            prevGroupEnd.next = prev;
+            prevGroupEnd = newGroupEnd;
+        }
+        
+        return dummy.next;
+    }
+    
+    private ListNode getKth(ListNode node, int k) {
+        while (node != null && k > 0) {
+            node = node.next;
+            k--;
+        }
+        return node;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Each node is processed exactly twice",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Swap Nodes in Pairs", difficulty: "medium", category: "linked-list" },
+        { title: "Reverse Linked List", difficulty: "easy", category: "linked-list" }
+    ]
+}
+
+
+
+
+
+
+	
+	
+];
+
+
+
+
+
+        // DOM elements
+        const problemsContainer = document.getElementById('problems-container');
+        const problemTitle = document.getElementById('problem-title');
+        const problemMeta = document.getElementById('problem-meta');
+        const problemContent = document.getElementById('problem-content');
+        const solutionsContainer = document.getElementById('solutions-container');
+        const similarQuestionsContainer = document.getElementById('similar-questions-container');
+        const problemSearch = document.getElementById('problem-search');
+        const categoryLinks = document.querySelectorAll('nav ul li a');
+
+        // Current state
+        let currentProblem = null;
+        let filteredProblems = [...problems];
+
+        // Initialize the app
+        function init() {
+            renderProblems();
+            if (problems.length > 0) {
+                loadProblem(problems[0]);
+            }
+            setupEventListeners();
+        }
+
+        // Render problems list
+        function renderProblems() {
+            problemsContainer.innerHTML = '';
+            filteredProblems.forEach(problem => {
+                const difficultyClass = problem.difficulty === 'easy' ? 'bg-green-100 text-green-800' : 
+                                      problem.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                                      'bg-red-100 text-red-800';
+                
+                const problemItem = document.createElement('div');
+                problemItem.className = `problem-item border-l-4 p-3 rounded cursor-pointer ${currentProblem && currentProblem.id === problem.id ? 'active' : ''}`;
+                problemItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">${problem.id}. ${problem.title}</span>
+                        <span class="text-xs ${difficultyClass} px-2 py-1 rounded">${problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-1 dark:text-gray-400">
+                        <span>${problem.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                        <div class="flex space-x-1">
+                            <i class="fas fa-check text-green-500"></i>
+                            <i class="far fa-star ${problem.id === 1 ? 'text-yellow-400' : 'text-gray-400'}"></i>
+                        </div>
+                    </div>
+                `;
+                problemItem.addEventListener('click', () => loadProblem(problem));
+                problemsContainer.appendChild(problemItem);
+            });
+        }
+
+        // Load problem details
+        function loadProblem(problem) {
+            currentProblem = problem;
+            
+            // Update active problem in list
+            document.querySelectorAll('.problem-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.problem-item')[filteredProblems.findIndex(p => p.id === problem.id)].classList.add('active');
+            
+            // Update problem title
+            problemTitle.textContent = `${problem.id}. ${problem.title}`;
+            
+            // Update problem meta
+            const difficultyClass = problem.difficulty === 'easy' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-white' : 
+                                  problem.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-white' : 
+                                  'bg-red-100 text-red-800 dark:bg-red-700 dark:text-white';
+            
+            problemMeta.innerHTML = `
+                <span class="text-xs ${difficultyClass} px-2 py-1 rounded">${problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}</span>
+                <span class="text-sm text-gray-600 dark:text-gray-300">${problem.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                <div class="flex space-x-2 text-gray-400">
+                    <i class="fas fa-thumbs-up hover:text-blue-600 cursor-pointer dark:hover:text-blue-400"></i>
+                    <i class="fas fa-thumbs-down hover:text-blue-600 cursor-pointer dark:hover:text-blue-400"></i>
+                </div>
+            `;
+            
+            // Update problem content
+            let examplesHTML = '';
+            problem.examples.forEach((example, index) => {
+                examplesHTML += `
+                    <h3 class="font-bold mt-4 mb-2">Example ${index + 1}:</h3>
+                    <pre>Input: ${example.input}
+Output: ${example.output}
+${example.explanation ? 'Explanation: ' + example.explanation : ''}</pre>
+                `;
+            });
+            
+            let constraintsHTML = '';
+            problem.constraints.forEach(constraint => {
+                constraintsHTML += `<li>${constraint}</li>`;
+            });
+            
+            problemContent.innerHTML = `
+                <div class="markdown-content">
+                    <p>${problem.description}</p>
+                    ${examplesHTML}
+                    <h3 class="font-bold mt-4 mb-2">Constraints:</h3>
+                    <ul class="list-disc pl-5">
+                        ${constraintsHTML}
+                    </ul>
+                </div>
+            `;
+            
+            // Update solutions
+            solutionsContainer.innerHTML = '<h3 class="text-xl font-bold mb-4">Solutions</h3>';
+            problem.solutions.forEach(solution => {
+                const complexityClass = solution.complexity === 'O(n²)' ? 'bg-gray-200 text-gray-800' : 'bg-green-200 text-green-800';
+                
+                const solutionElement = document.createElement('div');
+                solutionElement.className = 'card border rounded-lg mb-4 overflow-hidden dark:border-gray-700';
+                solutionElement.innerHTML = `
+                    <div class="bg-gray-50 px-4 py-3 flex justify-between items-center cursor-pointer solution-toggle dark:bg-gray-700">
+                        <div class="flex items-center space-x-3">
+                            <span class="font-medium">${solution.title}</span>
+                            <span class="text-xs ${complexityClass} px-2 py-1 rounded dark:bg-gray-600 dark:text-white">${solution.complexity}</span>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </div>
+                    <div class="solution-content">
+                        <div class="p-4 markdown-content">
+                            <h4 class="font-bold mb-2">Intuition</h4>
+                            <p>${solution.content.intuition}</p>
+                            
+                            <h4 class="font-bold mt-4 mb-2">Approach</h4>
+                            <p>${solution.content.approach}</p>
+                            
+                            <h4 class="font-bold mt-4 mb-2">Solution Code</h4>
+                            <pre>${solution.content.code}</pre>
+                            
+                            <h4 class="font-bold mt-4 mb-2">Complexity Analysis</h4>
+                            <ul class="list-disc pl-5">
+                                <li><strong>Time Complexity:</strong> ${solution.content.analysis.time}</li>
+                                <li><strong>Space Complexity:</strong> ${solution.content.analysis.space}</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                solutionsContainer.appendChild(solutionElement);
+            });
+            
+            // Update similar questions
+            similarQuestionsContainer.innerHTML = '<h3 class="text-xl font-bold mb-4">Similar Questions</h3>';
+            const similarQuestionsGrid = document.createElement('div');
+            similarQuestionsGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+            
+            problem.similarQuestions.forEach(question => {
+                const difficultyClass = question.difficulty === 'easy' ? 'bg-green-100 text-green-800' : 
+                                      question.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                                      'bg-red-100 text-red-800';
+                
+                const questionElement = document.createElement('div');
+                questionElement.className = 'border rounded p-3 hover:bg-gray-50 cursor-pointer dark:border-gray-700 dark:hover:bg-gray-700';
+                questionElement.innerHTML = `
+                    <div class="flex justify-between">
+                        <span class="font-medium">${question.title}</span>
+                        <span class="text-xs ${difficultyClass} px-2 py-1 rounded">${question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1 dark:text-gray-400">${question.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                `;
+                similarQuestionsGrid.appendChild(questionElement);
+            });
+            
+            similarQuestionsContainer.appendChild(similarQuestionsGrid);
+            
+            // Initialize solution toggles
+            setupSolutionToggles();
+        }
+
+        // Setup solution toggles
+        function setupSolutionToggles() {
+            document.querySelectorAll('.solution-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('i');
+                    content.classList.toggle('show');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Dark mode toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const icon = themeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+
+            // Problem search
+            problemSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filteredProblems = problems.filter(problem => 
+                    problem.title.toLowerCase().includes(searchTerm) || 
+                    problem.description.toLowerCase().includes(searchTerm)
+                );
+                renderProblems();
+            });
+
+            // Category filtering
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const category = link.dataset.category;
+                    
+                    // Update active category
+                    categoryLinks.forEach(l => l.classList.remove('text-blue-200'));
+                    link.classList.add('text-blue-200');
+                    
+                    if (category === 'all') {
+                        filteredProblems = [...problems];
+                    } else {
+                        filteredProblems = problems.filter(problem => problem.category === category || 
+                            (category === 'dp' && problem.category === 'dynamic-programming'));
+                    }
+                    renderProblems();
+                    
+                    // Load first problem in filtered list if current problem not in filtered list
+                    if (filteredProblems.length > 0 && (!currentProblem || !filteredProblems.some(p => p.id === currentProblem.id))) {
+                        loadProblem(filteredProblems[0]);
+                    }
+                });
+            });
+
+            // Run and Submit buttons (placeholder functionality)
+            document.getElementById('run-code').addEventListener('click', () => {
+                alert('Running code... (This is a placeholder)');
+            });
+
+            document.getElementById('submit-code').addEventListener('click', () => {
+                alert('Submitting code... (This is a placeholder)');
+            });
+        }
+
+        // Initialize the app
+        init();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    </script>
+</body>
+</html>
