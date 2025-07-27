@@ -4931,7 +4931,199 @@ A <strong>valid BST</strong> is defined as follows:
         { title: "Binary Tree Inorder Traversal", difficulty: "easy", category: "binary-tree" },
         { title: "Find Mode in Binary Search Tree", difficulty: "easy", category: "binary-tree" }
     ]
-}
+},
+
+    {
+        "id": 57,
+        "title": "Kth Smallest Element In a BST",
+        "difficulty": "medium",
+        "category": "binary-tree",
+        "description": "Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.",
+        "examples": [
+            {
+                "input": "root = [3,1,4,null,2], k = 1",
+                "output": "1",
+                "explanation": "The 1st smallest element is 1."
+            },
+            {
+                "input": "root = [5,3,6,2,4,null,null,1], k = 3",
+                "output": "3",
+                "explanation": "The 3rd smallest element is 3."
+            }
+        ],
+        "constraints": [
+            "The number of nodes in the tree is n.",
+            "1 <= k <= n <= 10^4",
+            "0 <= Node.val <= 10^4"
+        ],
+        "solutions": [
+            {
+                "title": "Inorder Traversal Approach",
+                "complexity": "O(n)",
+                "content": {
+                    "intuition": "BST properties guarantee that inorder traversal yields nodes in sorted order.",
+                    "approach": "Perform an inorder traversal and return the kth element visited.",
+                    "code": "class Solution {\n    private int count = 0;\n    private int result = 0;\n    \n    public int kthSmallest(TreeNode root, int k) {\n        inorder(root, k);\n        return result;\n    }\n    \n    private void inorder(TreeNode node, int k) {\n        if (node == null) return;\n        \n        inorder(node.left, k);\n        \n        count++;\n        if (count == k) {\n            result = node.val;\n            return;\n        }\n        \n        inorder(node.right, k);\n    }\n}",
+                    "analysis": {
+                        "time": "O(n) - In the worst case we visit all nodes",
+                        "space": "O(h) - Where h is the height of the tree (recursion stack)"
+                    }
+                }
+            },
+            {
+                "title": "Iterative Inorder Approach",
+                "complexity": "O(n)",
+                "content": {
+                    "intuition": "Same as recursive approach but using iteration to avoid recursion stack limits.",
+                    "approach": "Use a stack to simulate inorder traversal iteratively.",
+                    "code": "class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Stack<TreeNode> stack = new Stack<>();\n        \n        while (true) {\n            while (root != null) {\n                stack.push(root);\n                root = root.left;\n            }\n            root = stack.pop();\n            if (--k == 0) return root.val;\n            root = root.right;\n        }\n    }\n}",
+                    "analysis": {
+                        "time": "O(n) - In the worst case we visit all nodes",
+                        "space": "O(h) - Where h is the height of the tree (stack size)"
+                    }
+                }
+            }
+        ],
+        "similarQuestions": [
+            {"title": "Binary Tree Inorder Traversal", "difficulty": "easy", "category": "binary-tree"},
+            {"title": "Second Minimum Node In a Binary Tree", "difficulty": "easy", "category": "binary-tree"},
+            {"title": "Kth Largest Element in a BST", "difficulty": "medium", "category": "binary-tree"}
+        ]
+    },
+    {
+        "id": 58,
+        "title": "Construct Binary Tree From Preorder And Inorder Traversal",
+        "difficulty": "medium",
+        "category": "binary-tree",
+        "description": "Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.",
+        "examples": [
+            {
+                "input": "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]",
+                "output": "[3,9,20,null,null,15,7]",
+                "explanation": "The binary tree is constructed as shown."
+            },
+            {
+                "input": "preorder = [-1], inorder = [-1]",
+                "output": "[-1]",
+                "explanation": "The tree has only one node."
+            }
+        ],
+        "constraints": [
+            "1 <= preorder.length <= 3000",
+            "inorder.length == preorder.length",
+            "-3000 <= preorder[i], inorder[i] <= 3000",
+            "preorder and inorder consist of unique values.",
+            "Each value of inorder also appears in preorder.",
+            "preorder is guaranteed to be the preorder traversal of the tree.",
+            "inorder is guaranteed to be the inorder traversal of the tree."
+        ],
+        "solutions": [
+            {
+                "title": "Recursive Approach",
+                "complexity": "O(n)",
+                "content": {
+                    "intuition": "The first element in preorder is the root. In inorder, elements left of root are left subtree and right are right subtree.",
+                    "approach": "1. Use preorder to find root\n2. Find root in inorder to determine left/right subtrees\n3. Recursively build left and right subtrees",
+                    "code": "class Solution {\n    private int preIndex = 0;\n    private Map<Integer, Integer> inorderMap;\n    \n    public TreeNode buildTree(int[] preorder, int[] inorder) {\n        inorderMap = new HashMap<>();\n        for (int i = 0; i < inorder.length; i++) {\n            inorderMap.put(inorder[i], i);\n        }\n        return helper(preorder, 0, inorder.length - 1);\n    }\n    \n    private TreeNode helper(int[] preorder, int inStart, int inEnd) {\n        if (inStart > inEnd) return null;\n        \n        TreeNode root = new TreeNode(preorder[preIndex++]);\n        int inIndex = inorderMap.get(root.val);\n        \n        root.left = helper(preorder, inStart, inIndex - 1);\n        root.right = helper(preorder, inIndex + 1, inEnd);\n        \n        return root;\n    }\n}",
+                    "analysis": {
+                        "time": "O(n) - We visit each node exactly once",
+                        "space": "O(n) - For the hashmap and recursion stack"
+                    }
+                }
+            }
+        ],
+        "similarQuestions": [
+            {"title": "Construct Binary Tree from Inorder and Postorder Traversal", "difficulty": "medium", "category": "binary-tree"},
+            {"title": "Construct Binary Search Tree from Preorder Traversal", "difficulty": "medium", "category": "binary-tree"}
+        ]
+    },
+    {
+        "id": 59,
+        "title": "Binary Tree Maximum Path Sum",
+        "difficulty": "hard",
+        "category": "binary-tree",
+        "description": "A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. A node can only appear in the sequence at most once. Note that the path does not need to pass through the root. The path sum of a path is the sum of the node's values in the path. Given the root of a binary tree, return the maximum path sum of any non-empty path.",
+        "examples": [
+            {
+                "input": "root = [1,2,3]",
+                "output": "6",
+                "explanation": "The optimal path is 2 -> 1 -> 3 with a path sum of 2 + 1 + 3 = 6."
+            },
+            {
+                "input": "root = [-10,9,20,null,null,15,7]",
+                "output": "42",
+                "explanation": "The optimal path is 15 -> 20 -> 7 with a path sum of 15 + 20 + 7 = 42."
+            }
+        ],
+        "constraints": [
+            "The number of nodes in the tree is in the range [1, 3 * 10^4].",
+            "-1000 <= Node.val <= 1000"
+        ],
+        "solutions": [
+            {
+                "title": "Recursive Approach",
+                "complexity": "O(n)",
+                "content": {
+                    "intuition": "For each node, calculate the maximum path sum that includes the node and potentially continues upward.",
+                    "approach": "1. Recursively compute maximum path sums for left and right subtrees\n2. For each node, calculate four possibilities:\n   - Node only\n   - Node + left path\n   - Node + right path\n   - Node + left + right paths\n3. Track the global maximum",
+                    "code": "class Solution {\n    private int maxSum = Integer.MIN_VALUE;\n    \n    public int maxPathSum(TreeNode root) {\n        helper(root);\n        return maxSum;\n    }\n    \n    private int helper(TreeNode node) {\n        if (node == null) return 0;\n        \n        int left = Math.max(0, helper(node.left));\n        int right = Math.max(0, helper(node.right));\n        \n        // Update global maximum (path that includes current node as root)\n        maxSum = Math.max(maxSum, node.val + left + right);\n        \n        // Return maximum path sum that can be extended upward\n        return node.val + Math.max(left, right);\n    }\n}",
+                    "analysis": {
+                        "time": "O(n) - We visit each node exactly once",
+                        "space": "O(h) - Where h is the height of the tree (recursion stack)"
+                    }
+                }
+            }
+        ],
+        "similarQuestions": [
+            {"title": "Path Sum", "difficulty": "easy", "category": "binary-tree"},
+            {"title": "Sum Root to Leaf Numbers", "difficulty": "medium", "category": "binary-tree"},
+            {"title": "Longest Univalue Path", "difficulty": "medium", "category": "binary-tree"}
+        ]
+    },
+    {
+        "id": 60,
+        "title": "Serialize And Deserialize Binary Tree",
+        "difficulty": "hard",
+        "category": "binary-tree",
+        "description": "Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.",
+        "examples": [
+            {
+                "input": "root = [1,2,3,null,null,4,5]",
+                "output": "[1,2,3,null,null,4,5]",
+                "explanation": "The serialized string should allow reconstruction of the original tree."
+            },
+            {
+                "input": "root = []",
+                "output": "[]",
+                "explanation": "An empty tree is represented by an empty string."
+            }
+        ],
+        "constraints": [
+            "The number of nodes in the tree is in the range [0, 10^4].",
+            "-1000 <= Node.val <= 1000"
+        ],
+        "solutions": [
+            {
+                "title": "Preorder Traversal with Null Markers",
+                "complexity": "O(n)",
+                "content": {
+                    "intuition": "Use a compact representation that marks null nodes explicitly to allow reconstruction.",
+                    "approach": "1. Serialize using preorder traversal with 'null' markers\n2. Deserialize by rebuilding the tree from the serialized string",
+                    "code": "public class Codec {\n    private static final String DELIMITER = \",\";\n    private static final String NULL_MARKER = \"null\";\n    \n    // Encodes a tree to a single string.\n    public String serialize(TreeNode root) {\n        StringBuilder sb = new StringBuilder();\n        buildString(root, sb);\n        return sb.toString();\n    }\n    \n    private void buildString(TreeNode node, StringBuilder sb) {\n        if (node == null) {\n            sb.append(NULL_MARKER).append(DELIMITER);\n            return;\n        }\n        sb.append(node.val).append(DELIMITER);\n        buildString(node.left, sb);\n        buildString(node.right, sb);\n    }\n\n    // Decodes your encoded data to tree.\n    public TreeNode deserialize(String data) {\n        Queue<String> nodes = new LinkedList<>(Arrays.asList(data.split(DELIMITER)));\n        return buildTree(nodes);\n    }\n    \n    private TreeNode buildTree(Queue<String> nodes) {\n        String val = nodes.poll();\n        if (val == null || val.equals(NULL_MARKER)) {\n            return null;\n        }\n        TreeNode node = new TreeNode(Integer.parseInt(val));\n        node.left = buildTree(nodes);\n        node.right = buildTree(nodes);\n        return node;\n    }\n}",
+                    "analysis": {
+                        "time": "O(n) - We process each node exactly once during serialization and deserialization",
+                        "space": "O(n) - For the serialized string and recursion stack"
+                    }
+                }
+            }
+        ],
+        "similarQuestions": [
+            {"title": "Serialize and Deserialize BST", "difficulty": "medium", "category": "binary-tree"},
+            {"title": "Find Duplicate Subtrees", "difficulty": "medium", "category": "binary-tree"},
+            {"title": "Serialize and Deserialize N-ary Tree", "difficulty": "hard", "category": "tree"}
+        ]
+    }
+
 
 
 
