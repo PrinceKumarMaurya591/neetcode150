@@ -4057,6 +4057,880 @@ You may not alter the values in the list's nodes, only nodes themselves may be c
         { title: "Swap Nodes in Pairs", difficulty: "medium", category: "linked-list" },
         { title: "Reverse Linked List", difficulty: "easy", category: "linked-list" }
     ]
+},
+{
+    id: 46,
+    title: "Invert Binary Tree",
+    difficulty: "easy",
+    category: "binary-tree",
+    description: `Given the <code>root</code> of a binary tree, invert the tree, and return its root.`,
+    examples: [
+        {
+            input: "root = [4,2,7,1,3,6,9]",
+            output: "[4,7,2,9,6,3,1]",
+            explanation: ""
+        },
+        {
+            input: "root = [2,1,3]",
+            output: "[2,3,1]",
+            explanation: ""
+        },
+        {
+            input: "root = []",
+            output: "[]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[0, 100]</code>.",
+        "<code>-100 <= Node.val <= 100</code>"
+    ],
+    solutions: [
+        {
+            title: "Recursive Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Swap left and right children recursively for each node.",
+                approach: "1. Base case: if node is null, return. 2. Swap left and right children. 3. Recursively invert left and right subtrees.",
+                code: `/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) return null;
+        
+        TreeNode left = invertTree(root.left);
+        TreeNode right = invertTree(root.right);
+        
+        root.left = right;
+        root.right = left;
+        
+        return root;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        },
+        {
+            title: "Iterative Approach (BFS)",
+            complexity: "O(n)",
+            content: {
+                intuition: "Use level-order traversal to swap children of each node.",
+                approach: "1. Use a queue for BFS. 2. For each node, swap its children before enqueueing them.",
+                code: `class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) return null;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            
+            // Swap left and right children
+            TreeNode temp = node.left;
+            node.left = node.right;
+            node.right = temp;
+            
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        
+        return root;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(n) - Queue size can be up to n/2 for last level"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Symmetric Tree", difficulty: "easy", category: "binary-tree" },
+        { title: "Univalued Binary Tree", difficulty: "easy", category: "binary-tree" }
+    ]
+},
+{
+    id: 47,
+    title: "Maximum Depth of Binary Tree",
+    difficulty: "easy",
+    category: "binary-tree",
+    description: `Given the <code>root</code> of a binary tree, return its <strong>maximum depth</strong>.
+
+A binary tree's <strong>maximum depth</strong> is the number of nodes along the longest path from the root node down to the farthest leaf node.`,
+    examples: [
+        {
+            input: "root = [3,9,20,null,null,15,7]",
+            output: "3",
+            explanation: ""
+        },
+        {
+            input: "root = [1,null,2]",
+            output: "2",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[0, 10<sup>4</sup>]</code>.",
+        "<code>-100 <= Node.val <= 100</code>"
+    ],
+    solutions: [
+        {
+            title: "Recursive DFS Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "The depth is 1 + maximum depth of left and right subtrees.",
+                approach: "1. Base case: if node is null, return 0. 2. Recursively compute max depth of left and right subtrees. 3. Return 1 + max of left and right depths.",
+                code: `class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        },
+        {
+            title: "Iterative BFS Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Count levels while traversing the tree level by level.",
+                approach: "1. Use a queue for level-order traversal. 2. Increment depth counter for each level processed.",
+                code: `class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int depth = 0;
+        
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            depth++;
+            
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+        }
+        
+        return depth;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(n) - Queue size can be up to n/2 for last level"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Balanced Binary Tree", difficulty: "easy", category: "binary-tree" },
+        { title: "Minimum Depth of Binary Tree", difficulty: "easy", category: "binary-tree" }
+    ]
+},
+{
+    id: 48,
+    title: "Diameter of Binary Tree",
+    difficulty: "easy",
+    category: "binary-tree",
+    description: `Given the <code>root</code> of a binary tree, return the <strong>length</strong> of the <strong>diameter</strong> of the tree.
+
+The <strong>diameter</strong> of a binary tree is the <strong>length</strong> of the longest path between any two nodes in a tree. This path may or may not pass through the <code>root</code>.
+
+The <strong>length</strong> of a path between two nodes is represented by the number of edges between them.`,
+    examples: [
+        {
+            input: "root = [1,2,3,4,5]",
+            output: "3",
+            explanation: "3 is the length of the path [4,2,1,3] or [5,2,1,3]."
+        },
+        {
+            input: "root = [1,2]",
+            output: "1",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[1, 10<sup>4</sup>]</code>.",
+        "<code>-100 <= Node.val <= 100</code>"
+    ],
+    solutions: [
+        {
+            title: "Post-order DFS with Height Calculation",
+            complexity: "O(n)",
+            content: {
+                intuition: "The diameter is the maximum of (left height + right height) for each node.",
+                approach: "1. Recursively compute heights. 2. Track maximum diameter encountered. 3. Return height to parent calls.",
+                code: `class Solution {
+    private int maxDiameter = 0;
+    
+    public int diameterOfBinaryTree(TreeNode root) {
+        height(root);
+        return maxDiameter;
+    }
+    
+    private int height(TreeNode node) {
+        if (node == null) return 0;
+        
+        int leftHeight = height(node.left);
+        int rightHeight = height(node.right);
+        
+        // Update max diameter
+        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+        
+        // Return height of current node
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Binary Tree Maximum Path Sum", difficulty: "hard", category: "binary-tree" },
+        { title: "Longest Univalue Path", difficulty: "medium", category: "binary-tree" }
+    ]
+},
+{
+    id: 49,
+    title: "Balanced Binary Tree",
+    difficulty: "easy",
+    category: "binary-tree",
+    description: `Given a binary tree, determine if it is <strong>height-balanced</strong>.
+
+A <strong>height-balanced</strong> binary tree is defined as:
+- A binary tree in which the left and right subtrees of every node differ in height by no more than 1.`,
+    examples: [
+        {
+            input: "root = [3,9,20,null,null,15,7]",
+            output: "true",
+            explanation: ""
+        },
+        {
+            input: "root = [1,2,2,3,3,null,null,4,4]",
+            output: "false",
+            explanation: ""
+        },
+        {
+            input: "root = []",
+            output: "true",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[0, 5000]</code>.",
+        "<code>-10<sup>4</sup> <= Node.val <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Bottom-up Height Check",
+            complexity: "O(n)",
+            content: {
+                intuition: "Check balance while calculating heights to avoid redundant calculations.",
+                approach: "1. Recursively check if subtrees are balanced. 2. Return height if balanced, -1 if unbalanced.",
+                code: `class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return checkHeight(root) != -1;
+    }
+    
+    private int checkHeight(TreeNode node) {
+        if (node == null) return 0;
+        
+        int leftHeight = checkHeight(node.left);
+        if (leftHeight == -1) return -1;
+        
+        int rightHeight = checkHeight(node.right);
+        if (rightHeight == -1) return -1;
+        
+        if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+        
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Maximum Depth of Binary Tree", difficulty: "easy", category: "binary-tree" },
+        { title: "Diameter of Binary Tree", difficulty: "easy", category: "binary-tree" }
+    ]
+},
+{
+    id: 50,
+    title: "Same Tree",
+    difficulty: "easy",
+    category: "binary-tree",
+    description: `Given the roots of two binary trees <code>p</code> and <code>q</code>, write a function to check if they are the same or not.
+
+Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.`,
+    examples: [
+        {
+            input: "p = [1,2,3], q = [1,2,3]",
+            output: "true",
+            explanation: ""
+        },
+        {
+            input: "p = [1,2], q = [1,null,2]",
+            output: "false",
+            explanation: ""
+        },
+        {
+            input: "p = [1,2,1], q = [1,1,2]",
+            output: "false",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in both trees is in the range <code>[0, 100]</code>.",
+        "<code>-10<sup>4</sup> <= Node.val <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "Recursive DFS Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Check if current nodes match and recursively check left and right subtrees.",
+                approach: "1. Base case: both null → true, one null → false. 2. Check values. 3. Recursively check left and right subtrees.",
+                code: `class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+        if (p.val != q.val) return false;
+        
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        },
+        {
+            title: "Iterative BFS Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Use queues to compare nodes level by level.",
+                approach: "1. Use two queues for level-order traversal. 2. Compare nodes at each step.",
+                code: `class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(p);
+        queue.offer(q);
+        
+        while (!queue.isEmpty()) {
+            TreeNode first = queue.poll();
+            TreeNode second = queue.poll();
+            
+            if (first == null && second == null) continue;
+            if (first == null || second == null) return false;
+            if (first.val != second.val) return false;
+            
+            queue.offer(first.left);
+            queue.offer(second.left);
+            queue.offer(first.right);
+            queue.offer(second.right);
+        }
+        
+        return true;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(n) - Queue size can be up to n/2 for last level"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Subtree of Another Tree", difficulty: "easy", category: "binary-tree" },
+        { title: "Symmetric Tree", difficulty: "easy", category: "binary-tree" }
+    ]
+},
+{
+    id: 51,
+    title: "Subtree of Another Tree",
+    difficulty: "easy",
+    category: "binary-tree",
+    description: `Given the roots of two binary trees <code>root</code> and <code>subRoot</code>, return <code>true</code> if there is a subtree of <code>root</code> with the same structure and node values of <code>subRoot</code> and <code>false</code> otherwise.
+
+A subtree of a binary tree <code>tree</code> is a tree that consists of a node in <code>tree</code> and all of this node's descendants. The tree <code>tree</code> could also be considered as a subtree of itself.`,
+    examples: [
+        {
+            input: "root = [3,4,5,1,2], subRoot = [4,1,2]",
+            output: "true",
+            explanation: ""
+        },
+        {
+            input: "root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]",
+            output: "false",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the <code>root</code> tree is in the range <code>[1, 2000]</code>.",
+        "The number of nodes in the <code>subRoot</code> tree is in the range <code>[1, 1000]</code>.",
+        "<code>-10<sup>4</sup> <= root.val <= 10<sup>4</sup></code>",
+        "<code>-10<sup>4</sup> <= subRoot.val <= 10<sup>4</sup></code>"
+    ],
+    solutions: [
+        {
+            title: "DFS with Same Tree Check",
+            complexity: "O(m*n) where m and n are tree sizes",
+            content: {
+                intuition: "For each node in root, check if subtree starting there matches subRoot.",
+                approach: "1. Traverse root tree. 2. For each node, check if subtree matches subRoot using same tree check.",
+                code: `class Solution {
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        if (root == null) return false;
+        if (isSameTree(root, subRoot)) return true;
+        return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+    }
+    
+    private boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+        if (p.val != q.val) return false;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+}`,
+                analysis: {
+                    time: "O(m*n) - For each node in root (m), check subtree (n)",
+                    space: "O(h) - Recursion stack height (h = height of root)"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Count Univalue Subtrees", difficulty: "medium", category: "binary-tree" },
+        { title: "Most Frequent Subtree Sum", difficulty: "medium", category: "binary-tree" }
+    ]
+},
+{
+    id: 52,
+    title: "Lowest Common Ancestor of a Binary Search Tree",
+    difficulty: "easy",
+    category: "binary-tree",
+    description: `Given a binary search tree (BST), find the lowest common ancestor (LCA) of two given nodes in the BST.
+
+According to the <a href="https://en.wikipedia.org/wiki/Lowest_common_ancestor" target="_blank">definition of LCA on Wikipedia</a>: "The lowest common ancestor is defined between two nodes <code>p</code> and <code>q</code> as the lowest node in <code>T</code> that has both <code>p</code> and <code>q</code> as descendants (where we allow <strong>a node to be a descendant of itself</strong>)."`,
+    examples: [
+        {
+            input: "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8",
+            output: "6",
+            explanation: "The LCA of nodes 2 and 8 is 6."
+        },
+        {
+            input: "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4",
+            output: "2",
+            explanation: "The LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself."
+        },
+        {
+            input: "root = [2,1], p = 2, q = 1",
+            output: "2",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[2, 10<sup>5</sup>]</code>.",
+        "<code>-10<sup>9</sup> <= Node.val <= 10<sup>9</sup></code>",
+        "All <code>Node.val</code> are <strong>unique</strong>.",
+        "<code>p != q</code>",
+        "<code>p</code> and <code>q</code> will exist in the BST."
+    ],
+    solutions: [
+        {
+            title: "BST Property Utilization",
+            complexity: "O(h) where h is tree height",
+            content: {
+                intuition: "LCA is where p and q split into different subtrees, or one is parent of the other.",
+                approach: "1. If both nodes are smaller than current, search left. 2. If both are larger, search right. 3. Else current node is LCA.",
+                code: `class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        while (root != null) {
+            if (p.val < root.val && q.val < root.val) {
+                root = root.left;
+            } else if (p.val > root.val && q.val > root.val) {
+                root = root.right;
+            } else {
+                return root;
+            }
+        }
+        return null;
+    }
+}`,
+                analysis: {
+                    time: "O(h) - Worst case height of tree",
+                    space: "O(1) - Constant space used"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Lowest Common Ancestor of a Binary Tree", difficulty: "medium", category: "binary-tree" },
+        { title: "Smallest Common Region", difficulty: "medium", category: "tree" }
+    ]
+},
+{
+    id: 53,
+    title: "Binary Tree Level Order Traversal",
+    difficulty: "medium",
+    category: "binary-tree",
+    description: `Given the <code>root</code> of a binary tree, return the <em>level order traversal</em> of its nodes' values. (i.e., from left to right, level by level).`,
+    examples: [
+        {
+            input: "root = [3,9,20,null,null,15,7]",
+            output: "[[3],[9,20],[15,7]]",
+            explanation: ""
+        },
+        {
+            input: "root = [1]",
+            output: "[[1]]",
+            explanation: ""
+        },
+        {
+            input: "root = []",
+            output: "[]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[0, 2000]</code>.",
+        "<code>-1000 <= Node.val <= 1000</code>"
+    ],
+    solutions: [
+        {
+            title: "BFS with Queue",
+            complexity: "O(n)",
+            content: {
+                intuition: "Process nodes level by level using a queue.",
+                approach: "1. Use a queue to track nodes at current level. 2. For each level, record values and enqueue children.",
+                code: `class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) return result;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<Integer> currentLevel = new ArrayList<>();
+            
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                currentLevel.add(node.val);
+                
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+            
+            result.add(currentLevel);
+        }
+        
+        return result;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(n) - Queue size can be up to n/2 for last level"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Binary Tree Zigzag Level Order Traversal", difficulty: "medium", category: "binary-tree" },
+        { title: "Binary Tree Level Order Traversal II", difficulty: "medium", category: "binary-tree" }
+    ]
+},
+{
+    id: 54,
+    title: "Binary Tree Right Side View",
+    difficulty: "medium",
+    category: "binary-tree",
+    description: `Given the <code>root</code> of a binary tree, imagine yourself standing on the <strong>right side</strong> of it, return the values of the nodes you can see ordered from top to bottom.`,
+    examples: [
+        {
+            input: "root = [1,2,3,null,5,null,4]",
+            output: "[1,3,4]",
+            explanation: ""
+        },
+        {
+            input: "root = [1,null,3]",
+            output: "[1,3]",
+            explanation: ""
+        },
+        {
+            input: "root = []",
+            output: "[]",
+            explanation: ""
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[0, 100]</code>.",
+        "<code>-100 <= Node.val <= 100</code>"
+    ],
+    solutions: [
+        {
+            title: "BFS Level Order Traversal",
+            complexity: "O(n)",
+            content: {
+                intuition: "The rightmost node at each level will be visible from the right side.",
+                approach: "1. Perform level-order traversal. 2. Record the last node at each level.",
+                code: `class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                
+                if (i == levelSize - 1) {
+                    result.add(node.val);
+                }
+                
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+        }
+        
+        return result;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(n) - Queue size can be up to n/2 for last level"
+                }
+            }
+        },
+        {
+            title: "DFS Right-First Approach",
+            complexity: "O(n)",
+            content: {
+                intuition: "Traverse right subtree first, recording first node encountered at each depth.",
+                approach: "1. Recursively visit right then left. 2. Track current depth. 3. Add node if first at current depth.",
+                code: `class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        rightView(root, result, 0);
+        return result;
+    }
+    
+    private void rightView(TreeNode node, List<Integer> result, int depth) {
+        if (node == null) return;
+        
+        if (depth == result.size()) {
+            result.add(node.val);
+        }
+        
+        rightView(node.right, result, depth + 1);
+        rightView(node.left, result, depth + 1);
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Populating Next Right Pointers in Each Node", difficulty: "medium", category: "binary-tree" },
+        { title: "Boundary of Binary Tree", difficulty: "medium", category: "binary-tree" }
+    ]
+},
+{
+    id: 55,
+    title: "Count Good Nodes in Binary Tree",
+    difficulty: "medium",
+    category: "binary-tree",
+    description: `Given a binary tree <code>root</code>, a node <em>X</em> in the tree is named <strong>good</strong> if in the path from root to <em>X</em> there are no nodes with a value greater than <em>X</em>.
+
+Return the number of <strong>good</strong> nodes in the binary tree.`,
+    examples: [
+        {
+            input: "root = [3,1,4,3,null,1,5]",
+            output: "4",
+            explanation: "Nodes in blue are good.\nRoot (3) is always good.\nNode 4 -> (3,4) is the maximum value in the path from root.\nNode 5 -> (3,4,5) is the maximum value in the path from root.\nNode 3 -> (3,1,3) is the maximum value in the path from root."
+        },
+        {
+            input: "root = [3,3,null,4,2]",
+            output: "3",
+            explanation: "Node 2 -> (3, 3, 2) is not good because '3' is higher."
+        },
+        {
+            input: "root = [1]",
+            output: "1",
+            explanation: "Root is considered as good."
+        }
+    ],
+    constraints: [
+        "The number of nodes in the binary tree is in the range <code>[1, 10^5]</code>.",
+        "Each node's value is between <code>[-10^4, 10^4]</code>."
+    ],
+    solutions: [
+        {
+            title: "DFS with Path Maximum Tracking",
+            complexity: "O(n)",
+            content: {
+                intuition: "Track the maximum value encountered in the current path to determine if a node is good.",
+                approach: "1. Recursively traverse the tree. 2. Track current path maximum. 3. Count node if its value >= current maximum.",
+                code: `class Solution {
+    public int goodNodes(TreeNode root) {
+        return countGoodNodes(root, Integer.MIN_VALUE);
+    }
+    
+    private int countGoodNodes(TreeNode node, int currentMax) {
+        if (node == null) return 0;
+        
+        int count = 0;
+        if (node.val >= currentMax) {
+            count++;
+            currentMax = node.val;
+        }
+        
+        count += countGoodNodes(node.left, currentMax);
+        count += countGoodNodes(node.right, currentMax);
+        
+        return count;
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Binary Tree Paths", difficulty: "easy", category: "binary-tree" },
+        { title: "Path Sum", difficulty: "easy", category: "binary-tree" }
+    ]
+},
+{
+    id: 56,
+    title: "Validate Binary Search Tree",
+    difficulty: "medium",
+    category: "binary-tree",
+    description: `Given the <code>root</code> of a binary tree, determine if it is a valid binary search tree (BST).
+
+A <strong>valid BST</strong> is defined as follows:
+- The left subtree of a node contains only nodes with keys <strong>less than</strong> the node's key.
+- The right subtree of a node contains only nodes with keys <strong>greater than</strong> the node's key.
+- Both the left and right subtrees must also be binary search trees.`,
+    examples: [
+        {
+            input: "root = [2,1,3]",
+            output: "true",
+            explanation: ""
+        },
+        {
+            input: "root = [5,1,4,null,null,3,6]",
+            output: "false",
+            explanation: "The root node's value is 5 but its right child's value is 4."
+        }
+    ],
+    constraints: [
+        "The number of nodes in the tree is in the range <code>[1, 10<sup>4</sup>]</code>.",
+        "<code>-2<sup>31</sup> <= Node.val <= 2<sup>31</sup> - 1</code>"
+    ],
+    solutions: [
+        {
+            title: "Inorder Traversal Validation",
+            complexity: "O(n)",
+            content: {
+                intuition: "Inorder traversal of BST yields sorted values. Check if values are strictly increasing.",
+                approach: "1. Perform inorder traversal. 2. Track previous value. 3. Ensure current > previous.",
+                code: `class Solution {
+    private Integer prev = null;
+    
+    public boolean isValidBST(TreeNode root) {
+        return inorder(root);
+    }
+    
+    private boolean inorder(TreeNode node) {
+        if (node == null) return true;
+        
+        if (!inorder(node.left)) return false;
+        
+        if (prev != null && node.val <= prev) return false;
+        prev = node.val;
+        
+        return inorder(node.right);
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        },
+        {
+            title: "Recursive Range Checking",
+            complexity: "O(n)",
+            content: {
+                intuition: "Each node must be within valid range determined by its ancestors.",
+                approach: "1. Recursively check node values against min/max bounds. 2. Update bounds for children.",
+                code: `class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return validate(root, null, null);
+    }
+    
+    private boolean validate(TreeNode node, Integer min, Integer max) {
+        if (node == null) return true;
+        
+        if ((min != null && node.val <= min) || (max != null && node.val >= max)) {
+            return false;
+        }
+        
+        return validate(node.left, min, node.val) && validate(node.right, node.val, max);
+    }
+}`,
+                analysis: {
+                    time: "O(n) - Visit each node once",
+                    space: "O(h) - Recursion stack height (h = tree height)"
+                }
+            }
+        }
+    ],
+    similarQuestions: [
+        { title: "Binary Tree Inorder Traversal", difficulty: "easy", category: "binary-tree" },
+        { title: "Find Mode in Binary Search Tree", difficulty: "easy", category: "binary-tree" }
+    ]
 }
 
 
